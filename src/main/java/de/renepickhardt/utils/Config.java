@@ -22,6 +22,7 @@ import java.util.Properties;
  */
 public class Config extends Properties {
 	public String inputFile;
+	public String wikiRawFile;
 
 	static Config instance = null;
 	private static final long serialVersionUID = -4439565094382127683L;
