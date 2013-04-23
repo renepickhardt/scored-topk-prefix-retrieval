@@ -1,4 +1,4 @@
-package de.unikoblenz.algorithms;
+package de.unikoblenz.stpr.implementation.trie;
 
 public class TrieNode {
 	private TrieNode[] childs;

@@ -1,4 +1,4 @@
-package de.unikoblenz.interfaces;
+package de.unikoblenz.stpr.interfaces;
 
 import java.util.List;
 import java.util.Map;

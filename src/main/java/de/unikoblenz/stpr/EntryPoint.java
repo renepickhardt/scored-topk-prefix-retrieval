@@ -1,4 +1,4 @@
-package de.unikoblenz;
+package de.unikoblenz.stpr;
 
 public class EntryPoint {
 
