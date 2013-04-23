@@ -9,4 +9,4 @@ To get going:
 * mvn compile
 * mvn exec:java -Dexec.mainClass="de.renepickhardt.executables.Main" -e
 
-This is work with my coauthor Heinrich Hartmann
+This is work with my coauthor Heinrich Hartmann.
