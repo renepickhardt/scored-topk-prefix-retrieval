@@ -3,5 +3,12 @@
   <groupId>de.renepickhardt</groupId>
   <artifactId>scored-topk-prefix-retrieval</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>scored-topk-prefix-retrieval</name>
+  <name>scored-topk-prefix-retrieval</name>  
+  <dependencies>
+  	<dependency>
+  		<groupId>org.apache.commons</groupId>
+  		<artifactId>commons-lang3</artifactId>
+  		<version>3.1</version>
+  	</dependency>
+  </dependencies>
 </project>

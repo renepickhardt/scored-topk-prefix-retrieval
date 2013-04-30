@@ -8,27 +8,31 @@ import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class BTrieNode implements BTrieNodeInterface {
-	private char value;
+	private byte value;
 	private BTrieNode[] children;
 
-	public final int MAX_CHAR = 122;
-	public final int MIN_CHAR = 48;
+	public final int MAX_CHAR = 256;
+	public final int MIN_CHAR = 0;
 
-	public BTrieNode(char value) {
-		this.value = value;
+	public BTrieNode(char c) {
+		setChar(c);
 		this.children = new BTrieNode[MAX_CHAR - MIN_CHAR];
 	}
 
+	public void setChar(char c){
+		this.value = (byte) ((short)c & 0xFF);
+	}
+	
 	public char getChar() {
-		return value;
+		return (char)value;
 	}
 
 	public BTrieNode getChild(char c) {
-		return children[(int) c - MIN_CHAR];
+		return children[(short) c & 0xFF - MIN_CHAR];
 	}
 
 	public void setChild(char c, BTrieNode n) {
-		children[(int) c - MIN_CHAR] = n;
+		children[(short) c & 0xFF - MIN_CHAR] = n;
 	}
 
 	public List<Pair<Character, BTrieNode>> getChildren() {
@@ -73,7 +77,7 @@ public class BTrieNode implements BTrieNodeInterface {
 			if (n == null) continue;
 			for (String subline : n.recString()) {
 				if (fisrtLine) {
-					lines.add(value + subline);
+					lines.add(getChar() + subline);
 				} else {
 					lines.add(" " + subline);
 				}
@@ -81,7 +85,7 @@ public class BTrieNode implements BTrieNodeInterface {
 			}
 		}
 		if (fisrtLine) {
-			lines.add("" + value);
+			lines.add("" + getChar());
 		}
 		return lines;
 	}
