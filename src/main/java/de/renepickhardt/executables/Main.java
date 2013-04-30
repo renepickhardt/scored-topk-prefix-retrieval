@@ -43,10 +43,11 @@ public class Main {
 					break;
 				}
 			}
-			writeToFile(counts, 10);
-			writeToFile(counts, 100);
-			writeToFile(counts, 1000);
 			writeToFile(counts, 10000);
+			writeToFile(counts, 1000);
+			writeToFile(counts, 100);
+			writeToFile(counts, 10);
+			writeToFile(counts, 1);
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -64,6 +65,8 @@ public class Main {
 				bw.write(key + "\t" + value + "\n");
 			}
 		}
+		bw.flush();
+		bw.close();
 
 	}
 }
