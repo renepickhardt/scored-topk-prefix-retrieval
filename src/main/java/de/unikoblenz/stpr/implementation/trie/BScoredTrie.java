@@ -5,24 +5,26 @@ import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class BTrie implements BTrieInterface {
+public class BScoredTrie {
 	// Variables
-	BTrieNode root;
+	BTrieScoredNode root;
 
 	// Constructor
-	public BTrie() {
-		root = new BTrieNode('.');
+	public BScoredTrie() {
+		root = new BTrieScoredNode('.',0);
 	}
 
 	// Methods
-	public void add(String s){
-		BTrieNode last = root;
+	public void add(String s, int score){
+		BTrieScoredNode last = root;
 		for (int i = 0; i < s.length(); i++ ){
 			last = last.addGetChild(s.charAt(i));
 		}
+		last.setScore(score);
 	}
 
 	public String toString(){
 		return root.toString();
 	}
+
 }

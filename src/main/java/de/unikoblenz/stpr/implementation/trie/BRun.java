@@ -7,17 +7,18 @@ import java.util.TreeSet;
 
 import de.renepickhardt.utils.Config;
 import de.renepickhardt.utils.IOHelper;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 public class BRun {
 	public static void main(String[] args) throws IOException {
 		
-		BLinkedTrie T = new BLinkedTrie();
+                BLinkedTrie T = new BLinkedTrie();
 		
 		BufferedReader br = IOHelper.openReadFile(Config.get().inputFile);
 		String line = "";
 		int i = 0;
 		long baseMemory = Runtime.getRuntime().totalMemory();
-		IOHelper.log("start test trie");
+		IOHelper.log("start test Linked trie");
 		while ((line = br.readLine()) != null) {
 			T.add(line.split("\t")[0]);
 			// if (i++ % 50000 == 0) {
@@ -32,8 +33,37 @@ public class BRun {
 			}
 		}
 		IOHelper.log("done test trie");
+                System.in.read();
 		T = null;
 		Runtime.getRuntime().gc();
+                br.close();
+
+
+                BTrie U = new BTrie();
+		br = IOHelper.openReadFile(Config.get().inputFile);
+      		line = "";
+		i = 0;
+		baseMemory = Runtime.getRuntime().totalMemory();
+		IOHelper.log("start test Array trie");
+		while ((line = br.readLine()) != null) {
+			U.add(line.split("\t")[0]);
+			// if (i++ % 50000 == 0) {
+			// IOHelper.log(i + " lines indexed");
+			// }
+			if (++i % 10000 == 0) {
+				IOHelper.log(Runtime.getRuntime().totalMemory() - baseMemory
+						+ "\t" + i);
+			}
+			if (i > 2000000) {
+				break;
+			}
+		}
+		IOHelper.log("done test array trie");
+                System.in.read();
+		U = null;
+                br.close();
+ 		Runtime.getRuntime().gc();
+                
 
 		i = 0;
 		br.close();
@@ -56,6 +86,7 @@ public class BRun {
 
 		}
 		IOHelper.log("done test hashset");
+                System.in.read();
 
 		i = 0;
 		br.close();
@@ -81,6 +112,7 @@ public class BRun {
 		}
 		IOHelper.log("done test treeset");
 		br.close();
+                System.in.read();
 
 		// IOHelper.log("start print"); // System.out.println(T.toString());
 

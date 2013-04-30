@@ -7,16 +7,16 @@ import org.apache.commons.lang3.StringUtils;
 
 public class BLinkedTrie implements BTrieInterface {
 	// Variables
-	BTrieNode root;
+	TLNode root;
 
 	// Constructor
 	public BLinkedTrie() {
-		root = new BTrieNode('.');
+		root = new TLNode('.');
 	}
 
 	// Methods
 	public void add(String s){
-		BTrieNode last = root;
+		TLNode last = root;
 		for (int i = 0; i < s.length(); i++ ){
 			last = last.addGetChild(s.charAt(i));
 		}

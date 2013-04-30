@@ -10,7 +10,7 @@ import org.apache.commons.lang3.tuple.Pair;
 public class BTrieLinkedNode {
 	private byte value; // signed byte in [-128 .. 127]
 	private LinkedList<BTrieLinkedNode> children;
-
+	
 	// ASCII range covered by children
 	public static final int MAX_CHAR = 256;
 	public static final int MIN_CHAR = 0;
