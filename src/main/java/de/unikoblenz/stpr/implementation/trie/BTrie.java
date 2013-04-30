@@ -7,16 +7,16 @@ import org.apache.commons.lang3.StringUtils;
 
 public class BTrie implements BTrieInterface {
 	// Variables
-	BTrieNode root;
+	BTrieLinkedNode root;
 
 	// Constructor
 	public BTrie() {
-		root = new BTrieNode('.');
+		root = new BTrieLinkedNode('.');
 	}
 
 	// Methods
 	public void add(String s){
-		BTrieNode last = root;
+		BTrieLinkedNode last = root;
 		for (int i = 0; i < s.length(); i++ ){
 			last = last.addGetChild(s.charAt(i));
 		}

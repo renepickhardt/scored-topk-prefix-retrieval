@@ -8,11 +8,12 @@ import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class BTrieNode implements BTrieNodeInterface {
-	private byte value;
+	private byte value; // signed byte in [-128 .. 127]
 	private BTrieNode[] children;
 
-	public final int MAX_CHAR = 256;
-	public final int MIN_CHAR = 0;
+	// ASCII range covered by children
+	public static final int MAX_CHAR = 256;
+	public static final int MIN_CHAR = 0;
 
 	public BTrieNode(char c) {
 		setChar(c);
@@ -20,7 +21,7 @@ public class BTrieNode implements BTrieNodeInterface {
 	}
 
 	public void setChar(char c){
-		this.value = (byte) ((short)c & 0xFF);
+		this.value = (byte)c;
 	}
 	
 	public char getChar() {
@@ -28,11 +29,11 @@ public class BTrieNode implements BTrieNodeInterface {
 	}
 
 	public BTrieNode getChild(char c) {
-		return children[(short) c & 0xFF - MIN_CHAR];
+		return children[(byte)c + 128 - MIN_CHAR];
 	}
 
 	public void setChild(char c, BTrieNode n) {
-		children[(short) c & 0xFF - MIN_CHAR] = n;
+		children[(byte)c + 128 - MIN_CHAR] = n;
 	}
 
 	public List<Pair<Character, BTrieNode>> getChildren() {
