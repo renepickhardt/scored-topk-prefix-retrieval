@@ -1,7 +1,6 @@
 package de.unikoblenz.stpr.implementation.trie;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,16 +15,16 @@ public class BTrieNode implements BTrieNodeInterface {
 	public static final int MIN_CHAR = 0;
 
 	public BTrieNode(char c) {
-		setChar(c);
-		this.children = new BTrieNode[MAX_CHAR - MIN_CHAR];
+		this.setChar(c);
+		this.children = new BTrieNode[this.MAX_CHAR - this.MIN_CHAR];
 	}
 
 	public void setChar(char c){
 		this.value = (byte)c;
 	}
-	
+
 	public char getChar() {
-		return (char)value;
+		return (char) this.value;
 	}
 
 	public BTrieNode getChild(char c) {
@@ -38,11 +37,11 @@ public class BTrieNode implements BTrieNodeInterface {
 
 	public List<Pair<Character, BTrieNode>> getChildren() {
 		LinkedList<Pair<Character, BTrieNode>> out = new LinkedList<Pair<Character, BTrieNode>>();
-		for (int i = MIN_CHAR; i < MAX_CHAR; i++) {
-			if (children[i] == null) {
+		for (int i = this.MIN_CHAR; i < this.MAX_CHAR; i++) {
+			if (this.children[i] == null) {
 				continue;
 			}
-			out.add(Pair.of((char) (i + MIN_CHAR), children[i]));
+			out.add(Pair.of((char) (i + this.MIN_CHAR), this.children[i]));
 		}
 		return out;
 	}
@@ -55,17 +54,18 @@ public class BTrieNode implements BTrieNodeInterface {
 	 * @return child
 	 */
 	public BTrieNode addGetChild(char c) {
-		BTrieNode n = getChild(c);
+		BTrieNode n = this.getChild(c);
 		if (n == null) {
 			n = new BTrieNode(c);
-			setChild(c, n);
+			this.setChild(c, n);
 		}
 		return n;
 	}
 
+	@Override
 	public String toString() {
 		String out = "";
-		for (String line : recString()) {
+		for (String line : this.recString()) {
 			out += line + "\n";
 		}
 		return out;
@@ -74,11 +74,13 @@ public class BTrieNode implements BTrieNodeInterface {
 	private ArrayList<String> recString() {
 		ArrayList<String> lines = new ArrayList<String>();
 		Boolean fisrtLine = true;
-		for (BTrieNode n : children) {
-			if (n == null) continue;
+		for (BTrieNode n : this.children) {
+			if (n == null) {
+				continue;
+			}
 			for (String subline : n.recString()) {
 				if (fisrtLine) {
-					lines.add(getChar() + subline);
+					lines.add(this.getChar() + subline);
 				} else {
 					lines.add(" " + subline);
 				}
@@ -86,7 +88,7 @@ public class BTrieNode implements BTrieNodeInterface {
 			}
 		}
 		if (fisrtLine) {
-			lines.add("" + getChar());
+			lines.add("" + this.getChar());
 		}
 		return lines;
 	}
