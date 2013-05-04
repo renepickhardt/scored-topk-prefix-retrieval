@@ -1,5 +1,5 @@
 package de.unikoblenz.stpr.implementation.trie;
-import de.unikoblenz.stpr.implementation.trie.BTrie;
+import de.unikoblenz.stpr.ArrayTrie.ArrayTrie;
 
 public class Run {
 	public static void main(String[] args) {		

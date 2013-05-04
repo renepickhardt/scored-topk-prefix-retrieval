@@ -1,22 +1,23 @@
-package de.unikoblenz.stpr.implementation.trie;
+package de.unikoblenz.stpr.LinkedTrie;
 
+import de.unikoblenz.stpr.interfaces.trie.TrieInterface;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class BTrie implements BTrieInterface {
+public class LinkedTrie implements TrieInterface {
 	// Variables
-	BTrieNode root;
+	LinkedTrieNode root;
 
 	// Constructor
-	public BTrie() {
-		root = new BTrieNode('.');
+	public LinkedTrie() {
+		root = new LinkedTrieNode('.');
 	}
 
 	// Methods
 	public void add(String s){
-		BTrieNode last = root;
+		LinkedTrieNode last = root;
 		for (int i = 0; i < s.length(); i++ ){
 			last = last.addGetChild(s.charAt(i));
 		}

@@ -1,11 +1,12 @@
 package de.unikoblenz.stpr.implementation.trie;
 
+import de.unikoblenz.stpr.ArrayTrie.ArrayTrieNode;
 import java.util.List;
 import java.util.PriorityQueue;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-public class ScoredTrieNode<ScoreType extends Comparable<? super ScoreType>> extends BTrieNode {
+public class ScoredTrieNode<ScoreType extends Comparable<? super ScoreType>> extends ArrayTrieNode {
 	
 	private ScoreType score;
 	
@@ -36,9 +37,9 @@ public class ScoredTrieNode<ScoreType extends Comparable<? super ScoreType>> ext
 			}
 		}
 		PriorityQueue<Elt> q = new PriorityQueue();
-		for ( Pair<Character, BTrieNode> p: getChildren() ){
+		for ( Pair<Character, ArrayTrieNode> p: getChildren() ){
 			char c = p.getLeft();
-			BTrieNode n = p.getRight();
+			ArrayTrieNode n = p.getRight();
 			
 		}
 	}

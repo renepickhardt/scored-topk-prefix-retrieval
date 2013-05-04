@@ -1,4 +1,4 @@
-package de.unikoblenz.stpr.implementation.trie;
+package de.unikoblenz.stpr.LinkedTrie;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -6,16 +6,16 @@ import java.util.LinkedList;
 import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class TLNode {
+public class LinkedTrieNode {
 
     private byte value; // signed byte in [-128 .. 127]
-    private LinkedList<TLNode> children;
+    private LinkedList<LinkedTrieNode> children;
     
     // ASCII range covered by children
     public static final int MAX_CHAR = 256;
     public static final int MIN_CHAR = 0;
 
-    public TLNode(char c) {
+    public LinkedTrieNode(char c) {
         setChar(c);
     }
 
@@ -27,11 +27,11 @@ public class TLNode {
         return (char) value;
     }
 
-    public TLNode getChild(char c) {
+    public LinkedTrieNode getChild(char c) {
         if (children == null) {
             return null;
         }
-        for (TLNode n : children) {
+        for (LinkedTrieNode n : children) {
             if (n.getChar() == c) {
                 return n;
             }
@@ -39,9 +39,9 @@ public class TLNode {
         return null;
     }
 
-    public void setChild(char c, TLNode n) {
+    public void setChild(char c, LinkedTrieNode n) {
         if (children == null) {
-            children = new LinkedList<TLNode>();
+            children = new LinkedList<LinkedTrieNode>();
         }
         children.addFirst(n);
     }
@@ -53,10 +53,10 @@ public class TLNode {
      * @param character
      * @return child
      */
-    public TLNode addGetChild(char c) {
-        TLNode n = getChild(c);
+    public LinkedTrieNode addGetChild(char c) {
+        LinkedTrieNode n = getChild(c);
         if (n == null) {
-            n = new TLNode(c);
+            n = new LinkedTrieNode(c);
             setChild(c, n);
         }
         return n;
@@ -73,7 +73,7 @@ public class TLNode {
     private ArrayList<String> recString() {
         ArrayList<String> lines = new ArrayList<String>();
         Boolean fisrtLine = true;
-        for (TLNode n : children) {
+        for (LinkedTrieNode n : children) {
             if (n == null) {
                 continue;
             }
