@@ -8,7 +8,7 @@ import java.util.TreeMap;
 import de.renepickhardt.utils.Config;
 import de.renepickhardt.utils.IOHelper;
 
-public class Main {
+public class GenerateWikiFiles {
 
 	/**
 	 * @param args

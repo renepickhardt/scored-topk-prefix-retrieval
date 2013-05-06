@@ -73,6 +73,7 @@ public class LinkedTrieNode {
     private ArrayList<String> recString() {
         ArrayList<String> lines = new ArrayList<String>();
         Boolean fisrtLine = true;
+        if(children != null) {
         for (LinkedTrieNode n : children) {
             if (n == null) {
                 continue;
@@ -85,7 +86,7 @@ public class LinkedTrieNode {
                 }
                 fisrtLine = false;
             }
-        }
+        } }
         if (fisrtLine) {
             lines.add("" + getChar());
         }

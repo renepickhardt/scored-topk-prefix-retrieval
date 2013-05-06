@@ -2,7 +2,6 @@ package de.unikoblenz.stpr.ArrayTrie;
 
 import de.unikoblenz.stpr.interfaces.trie.TrieInterface;
 import de.unikoblenz.stpr.ArrayTrie.ArrayTrieNode;
-import de.unikoblenz.stpr.implementation.trie.TrieNodeInterface;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
