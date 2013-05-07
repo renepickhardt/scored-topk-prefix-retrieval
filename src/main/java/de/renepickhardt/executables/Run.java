@@ -1,7 +1,5 @@
 package de.renepickhardt.executables;
 
-import de.unikoblenz.stpr.LinkedTrie.LinkedTrie;
-import de.unikoblenz.stpr.ArrayTrie.ArrayTrie;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashSet;
@@ -19,11 +17,7 @@ public class Run {
 
     public static void main(String[] args) throws IOException {
         ScoredLinkedTrie T = new ScoredLinkedTrie();
-        T.root.getInsertChild('A', 4);
-        T.root.getInsertChild('A', 4);
-        T.root.getInsertChild('B', 5);
-        IOHelper.log(T.toString());
-        
+
         T.insertScored("AA", 6);
         T.insertScored("AAA", 3);
         T.insertScored("AAB", 2);
@@ -77,7 +71,7 @@ public class Run {
         int i = 0;
         long baseMemory = Runtime.getRuntime().totalMemory();
         while ((line = br.readLine()) != null) {
-            T.add(line.split("\t")[0],Integer.parseInt(line.split("\t")[1]));
+            T.insertScored(line.split("\t")[0],Integer.parseInt(line.split("\t")[1]));
             if (++i % 10000 == 0) {
                 IOHelper.log("Items: " + i + "\t Memory:" + (Runtime.getRuntime().totalMemory() - baseMemory));
             }
@@ -85,7 +79,7 @@ public class Run {
                 break;
             }
         }
-        T.root.getSetTopScore();
+        //T.root.getSetTopScore();
         IOHelper.log(T.toString());
         T = null;
         Runtime.getRuntime().gc();

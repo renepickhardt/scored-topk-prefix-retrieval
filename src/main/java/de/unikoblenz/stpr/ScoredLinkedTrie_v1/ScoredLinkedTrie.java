@@ -1,8 +1,7 @@
 package de.unikoblenz.stpr.ScoredLinkedTrie_v1;
 
-import de.unikoblenz.stpr.ScoredLinkedTrie.*;
 import de.unikoblenz.stpr.LinkedTrie.*;
-import de.unikoblenz.stpr.ScoredLinkedTrie.ScoredLinkedTrieNode;
+import de.unikoblenz.stpr.ScoredLinkedTrie_v2.ScoredLinkedTrieNode;
 import de.unikoblenz.stpr.interfaces.trie.TrieInterface;
 import java.util.ArrayList;
 import java.util.TreeMap;

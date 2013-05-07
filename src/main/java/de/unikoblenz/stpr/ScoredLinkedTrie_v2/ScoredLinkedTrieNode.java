@@ -1,6 +1,5 @@
-package de.unikoblenz.stpr.ScoredLinkedTrie;
+package de.unikoblenz.stpr.ScoredLinkedTrie_v2;
 
-import de.unikoblenz.stpr.ScoredLinkedTrie_v2.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,10 +15,11 @@ public class ScoredLinkedTrieNode {
     private int score = 0;
 
     // TopScoreMaintenance
-    public static final int TOP_K = 10;
-    
-    public ScoredLinkedTrieNode[] topChilds;
-    public int[] topScores;
+    public static final int TOP_K = 2;
+    private int topChildScore = 0;
+    private ScoredLinkedTrieNode topChildNode;
+//    public ScoredLinkedTrieNode[] topChilds;
+//    public int[] topScores;
     
     public ScoredLinkedTrieNode(char c, int s) {
         children = new LinkedList<ScoredLinkedTrieNode>();
@@ -27,8 +27,8 @@ public class ScoredLinkedTrieNode {
         setChar(c);
         setScore(s);
 
-        topScores = new int[] {};
-        topChilds =  new ScoredLinkedTrieNode[]{};
+        setTopChildScore(s);
+        setTopChildNode(this);
     }
 
     /*
@@ -75,7 +75,9 @@ public class ScoredLinkedTrieNode {
         if (n == null) {
             n = new ScoredLinkedTrieNode(c,s);
             setChild(n);
-        } 
+        } else {
+            n.updateScore(s);
+        }
         return n;
     }
 
@@ -90,83 +92,69 @@ public class ScoredLinkedTrieNode {
         this.score = s;
     }
     
-    public int[] getTopScores() {
-        return this.topScores;
+    public int getTopScore() {
+        return this.topChildScore;
     }
     
-    public ScoredLinkedTrieNode[] getTopChilds() {
-        return this.topChilds;
+    public ScoredLinkedTrieNode getTopScoreChild() {
+        return this.topChildNode;
     }
     
-    public void setTopChildScore(int[] s){
-        this.topScores = s;
+    public void setTopChildScore(int s){
+        this.topChildScore = s;
     }
     
-    public void setTopChildNodes(ScoredLinkedTrieNode[] n){
-        this.topChilds = n;
+    public void setTopChildNode(ScoredLinkedTrieNode n){
+        this.topChildNode = n;
     }
 
-    private void enlargeTopChilds(){
-        int LEN = topChilds.length;
-        ScoredLinkedTrieNode[] newTopChilds = new ScoredLinkedTrieNode[LEN + 1];
-        System.arraycopy(topChilds, 0, newTopChilds, 0, LEN);
-        topChilds = newTopChilds;
-    }
-    
-    private void enlargeTopScores(){
-        int LEN = topScores.length;
-        int[] newTopScores = new int[LEN + 1];
-        System.arraycopy(topScores, 0, newTopScores, 0, LEN);
-        topScores = newTopScores;
-    }
-    
-    public void pushTop(ScoredLinkedTrieNode topNode, int topScore){
-        if (topScore == 0) { return; }
-        if (topChilds.length < TOP_K){
-            enlargeTopChilds();
-            enlargeTopScores();
+    public void updateTop(ScoredLinkedTrieNode n, int score){
+        if( score > this.topChildScore ){
+            this.topChildScore = score;
+            this.topChildNode  = n;
         }
-        int tempScore = 0;
-        ScoredLinkedTrieNode tempNode = null;
-        int tempScore2 = 0;
-        ScoredLinkedTrieNode tempNode2 = null;
-        int STATUS = 0;
-        for(int i = 0; i < topChilds.length; i++){
-            // UPDATE VALUE OF topScores[i], topChilds[i]
-            if (STATUS == 0 && topScore >= topScores[i]) {
-                STATUS = 1;
-                
-                tempScore = topScores[i];
-                tempNode  = topChilds[i];
-                
-                topScores[i] = topScore;
-                topChilds[i] = topNode;
-            } else if (STATUS == 1 ) {
-                // SHIFT ENTRIES; ASSUMES tempScore, tempNode is Set
-                tempScore2 = topScores[i];
-                tempNode2  = topChilds[i];
-                
-                topScores[i] = tempScore;
-                topChilds[i] = tempNode;
-                
-                tempScore = tempScore2;
-                tempNode  = tempNode2;
+    }
+
+    public void updateScore(int s){
+        if (s > this.score){
+            this.score = s;
+            this.topChildNode = this;
+            this.topChildScore = s;
+        }
+    }
+    
+    /**
+     * Adds childNode and updates top scores.
+     * Returns childNode
+     * 
+     * @param childValue
+     * @param childScore 
+     */
+    public ScoredLinkedTrieNode getInsertChild(char childValue, int childScore) {
+        ScoredLinkedTrieNode childNode = addGetChild(childValue, childScore);
+        if (childScore > this.topChildScore) {
+            this.topChildScore = childScore;
+            this.topChildNode  = childNode;
+        }
+        return childNode;
+    }
+        
+    /**
+     * Sets topChildScore to max{ this.score, n.topChildScore }
+     * where n ranges though all children.
+     * 
+     * @return topChildScore
+     */
+    public int getSetTopScore() {
+        topChildScore = score;
+        for (ScoredLinkedTrieNode n: children){
+            if (n.getSetTopScore() > topChildScore) { 
+                topChildScore = n.getSetTopScore();
+                topChildNode  = n;
             }
         }
-    }
-
-    public int getMinTopScore(){
-        for (int i = topScores.length - 1; i >= 0; i--){
-            if (topScores[i] > 0) {
-                return topScores[i];
-            }
-        }
-        return 0;
-    }
-
-    public int getMaxTopScore(){
-        return topScores[0];
-    }
+        return topChildScore;
+    }    
 
     /*
      * SERIALIZATION
@@ -201,14 +189,7 @@ public class ScoredLinkedTrieNode {
         return lines;
     }
     
-    public String printTopChildScores() {
-        if (topScores == null) {
-            return "";
-        }
-        String out = "";
-        for (int s : topScores) {
-            out += s + " ";
-        }
-        return out.trim();
+    public String printTopChildScores(){
+        return String.valueOf(topChildScore);
     }
 }

@@ -1,6 +1,5 @@
-package de.unikoblenz.stpr.ScoredLinkedTrie;
+package de.unikoblenz.stpr.ScoredLinkedTrie_v2;
 
-import de.unikoblenz.stpr.ScoredLinkedTrie.*;
 import de.unikoblenz.stpr.LinkedTrie.*;
 import de.unikoblenz.stpr.interfaces.trie.TrieInterface;
 import java.util.ArrayList;
@@ -38,14 +37,13 @@ public class ScoredLinkedTrie implements TrieInterface {
         public void insertScored(String s, Integer score) {
             ScoredLinkedTrieNode last = root;
             ScoredLinkedTrieNode cur;
-            for (int i = 0; i < s.length(); i++ ){
+            for (int i = 0; i < s.length() - 1; i++ ){
                 // Iterate through internalNodes
-                cur = last.addGetChild(s.charAt(i),0);
-                last.pushTop(cur,score);
+                cur = last.getInsertChild(s.charAt(i),0);
+                last.updateTop(cur,cur.getTopScore());
                 last = cur;
             }
-            last.setScore(score);
-            last.pushTop(last,score);
+            last.getInsertChild(s.charAt(s.length()-1),score);
 	}
         
 	public String toString(){
