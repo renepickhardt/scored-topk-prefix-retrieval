@@ -54,6 +54,7 @@ public class ScoredLinkedTrie implements TrieInterface {
             ScoredLinkedTrieNode parentNode = path.pop();
             // Propagate Top Scores
             while(true){
+                if (childNode.getMaxTopScore() > score ) { break; }
                 parentNode.updateTop(childNode, score);
                 
                 childNode = parentNode;
