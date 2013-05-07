@@ -1,10 +1,7 @@
 package de.unikoblenz.stpr.LinkedTrie;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
-import org.apache.commons.lang3.tuple.Pair;
 
 public class LinkedTrieNode {
 

@@ -2,10 +2,6 @@ package de.unikoblenz.stpr.ArrayTrie;
 
 import de.unikoblenz.stpr.interfaces.trie.TrieNodeInterface;
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.apache.commons.lang3.tuple.Pair;
 
 public class ArrayTrieNode implements TrieNodeInterface {
 	private byte value; // signed byte in [-128 .. 127]

@@ -12,8 +12,6 @@ import de.renepickhardt.utils.Config;
 import de.renepickhardt.utils.IOHelper;
 import de.unikoblenz.stpr.ScoredLinkedTrie.ScoredLinkedTrie;
 import de.unikoblenz.stpr.interfaces.trie.TrieInterface;
-import org.jgraph.JGraph;
-import org.jgraph.graph.GraphModel;
 import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 public class Run {
@@ -21,33 +19,25 @@ public class Run {
 
     public static void main(String[] args) throws IOException {
         ScoredLinkedTrie T = new ScoredLinkedTrie();
-        T.add("A", 5);
-        T.add("B", 6);
-        T.add("AA", 7);
-        T.add("AAAA", 1);
-        T.add("AAAB", 2);
-        T.add("AAAC", 3);
-        T.add("AAB", 15);
-        T.add("AAAC", 19);
-        T.add("B", 16);
-        T.add("BAA", 17);
-        T.add("BAAA", 11);
-        T.add("BAAB", 12);
-        T.add("BAAC", 12);
-        T.add("BAB", 51);
-        T.add("BAAC", 91);
-
+        T.root.getInsertChild('A', 4);
+        T.root.getInsertChild('A', 4);
+        T.root.getInsertChild('B', 5);
+        IOHelper.log(T.toString());
+        
+        T.insertScored("AA", 6);
+        T.insertScored("AAA", 3);
+        T.insertScored("AAB", 2);
+        T.insertScored("AAC", 4);
+        
         IOHelper.log("Trie:");
-        T.root.getSetTopChildScores();
         IOHelper.log(T.toString());
         IOHelper.log("Top Scores:");
         IOHelper.log( T.root.printTopChildScores() );
         IOHelper.log("Trie:");
         IOHelper.log(T.toString());
-
         
+//        fillTrie(new LinkedTrie());
         
-        fillTrie(new LinkedTrie());
         fillScoredTrie(new ScoredLinkedTrie());
 //        
 //        fillTrie(new ArrayTrie());
@@ -78,6 +68,7 @@ public class Run {
         br.close();
         IOHelper.log("Test finished.");
     }
+
     public static void fillScoredTrie(ScoredLinkedTrie T) throws IOException {
         IOHelper.log("Start testing: " + T.getClass().getName());
 
@@ -90,12 +81,12 @@ public class Run {
             if (++i % 10000 == 0) {
                 IOHelper.log("Items: " + i + "\t Memory:" + (Runtime.getRuntime().totalMemory() - baseMemory));
             }
-            if (i > 1000000) {
+            if (i > 100) {
                 break;
             }
         }
-        T.root.getSetTopChildScores();
-//        IOHelper.log(T.toString());
+        T.root.getSetTopScore();
+        IOHelper.log(T.toString());
         T = null;
         Runtime.getRuntime().gc();
         br.close();
