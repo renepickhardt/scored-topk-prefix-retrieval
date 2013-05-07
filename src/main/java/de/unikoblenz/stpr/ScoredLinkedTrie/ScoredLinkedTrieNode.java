@@ -27,8 +27,8 @@ public class ScoredLinkedTrieNode {
         setChar(c);
         setScore(s);
 
-        topScores = new int[] {};
-        topChilds =  new ScoredLinkedTrieNode[]{};
+        topScores = new int[0];
+        topChilds =  new ScoredLinkedTrieNode[0];
     }
 
     /*
@@ -154,6 +154,17 @@ public class ScoredLinkedTrieNode {
             }
         }
     }
+    
+    public void updateTop(ScoredLinkedTrieNode childNode, int score) throws Exception {
+        for(int i = 0; i < topChilds.length; i++ ){
+            if (topChilds[i] == childNode){
+                topScores[i] = score;
+                return;
+            }
+        } 
+        // notFound -> push
+        pushTop(childNode, score);
+    }
 
     public int getMinTopScore(){
         for (int i = topScores.length - 1; i >= 0; i--){
@@ -211,4 +222,5 @@ public class ScoredLinkedTrieNode {
         }
         return out.trim();
     }
+
 }

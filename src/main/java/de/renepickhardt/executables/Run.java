@@ -15,10 +15,10 @@ import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 public class Run {
     public static final String INPUT_FILE = Config.get().inputFile;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, Exception {
         ScoredLinkedTrie T = new ScoredLinkedTrie();
 
-        T.insertScored("AA", 6);
+        T.insertScored("AB", 6);
         T.insertScored("AAA", 3);
         T.insertScored("AAB", 2);
         T.insertScored("AAC", 4);
@@ -63,7 +63,7 @@ public class Run {
         IOHelper.log("Test finished.");
     }
 
-    public static void fillScoredTrie(ScoredLinkedTrie T) throws IOException {
+    public static void fillScoredTrie(ScoredLinkedTrie T) throws IOException, Exception {
         IOHelper.log("Start testing: " + T.getClass().getName());
 
         BufferedReader br = IOHelper.openReadFile(INPUT_FILE);
