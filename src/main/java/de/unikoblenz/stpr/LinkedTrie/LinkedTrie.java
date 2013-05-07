@@ -4,7 +4,6 @@ import de.unikoblenz.stpr.interfaces.trie.TrieInterface;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
-import org.apache.commons.lang3.StringUtils;
 
 public class LinkedTrie implements TrieInterface {
 	// Variables

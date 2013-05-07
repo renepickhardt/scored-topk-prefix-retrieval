@@ -1,6 +1,7 @@
 package de.unikoblenz.stpr.ScoredLinkedTrie;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import de.renepickhardt.utils.IntervalHeap;
 import de.unikoblenz.stpr.interfaces.trie.TrieInterface;
@@ -115,6 +116,37 @@ public class ScoredLinkedTrie implements TrieInterface {
 		// TODO: expensive
 		entry.myName = current.myName + potentialCandidate.getChar();
 		candidateSet.add(entry);
+	}
+
+	public void insertScored(String s, Integer score) throws Exception {
+		LinkedList<ScoredLinkedTrieNode> path = new LinkedList<ScoredLinkedTrieNode>();
+		path.push(this.root);
+		for (int i = 0; i < s.length(); i++) {
+			// Iterate through internalNodes
+			path.push(path.peek().addGetChild(s.charAt(i), 0));
+		}
+
+		// Update EndNode
+		ScoredLinkedTrieNode endNode = path.pop();
+		endNode.setScore(score);
+		endNode.pushTop(endNode, score);
+
+		ScoredLinkedTrieNode childNode = endNode;
+		ScoredLinkedTrieNode parentNode = path.pop();
+		// Propagate Top Scores
+		while (true) {
+			if (childNode.getMaxTopScore() > score) {
+				break;
+			}
+			parentNode.updateTop(childNode, score);
+
+			childNode = parentNode;
+			if (path.size() == 0) {
+				break;
+			}
+			parentNode = path.pop();
+		}
+
 	}
 
 	@Override
