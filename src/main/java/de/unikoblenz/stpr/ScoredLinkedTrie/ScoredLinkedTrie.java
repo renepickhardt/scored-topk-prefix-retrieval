@@ -83,19 +83,25 @@ public class ScoredLinkedTrie implements TrieInterface {
 	 * @return returns null if the prefix cannot be matched.
 	 */
 	public ArrayList<TopScoreEntry> getTopKList(String prefix, int k) {
-		// if (prefix == null) {
-		// return null;
-		// }
-		ScoredLinkedTrieNode startNode = this.root;// .get(prefix);
-		// if (startNode == null) {
-		// return null;
-		// }
+		if (prefix == null) {
+			return null;
+		}
+		ScoredLinkedTrieNode startNode = null;
+		if (prefix == "") {
+			startNode = this.root;
+		} else {
+			startNode = this.get(prefix);
+		}
+		if (startNode == null) {
+			return null;
+		}
 
 		IntervalHeap<TopScoreEntry> candidateSet = new IntervalHeap<TopScoreEntry>();
 		ArrayList<TopScoreEntry> resultSet = new ArrayList<TopScoreEntry>();
 
 		// TODO: it should be getTopScore (which is not implemented yet)
-		TopScoreEntry tmp = new TopScoreEntry(startNode, startNode.getScore());
+		TopScoreEntry tmp = new TopScoreEntry(startNode,
+				startNode.getTopScores()[0]);
 		tmp.myName = prefix;
 
 		candidateSet.add(tmp);
@@ -103,25 +109,28 @@ public class ScoredLinkedTrie implements TrieInterface {
 		// TODO: maintain paths in the data structure or in the TopScoreEntries
 		int maxQueueLength = k;
 		while (candidateSet.size() > 0 && resultSet.size() < k) {
-			TopScoreEntry current = candidateSet.dequeueMax();
+			TopScoreEntry curEntry = candidateSet.dequeueMax();
 
-			ScoredLinkedTrieNode curNode = current.n;
+			ScoredLinkedTrieNode curNode = curEntry.n;
 
-			if (current.topScore == curNode.getScore()) {
+			if (curEntry.topScore == curNode.getScore()) {
 				maxQueueLength--;
-				resultSet.add(current);
+				resultSet.add(curEntry);
+				// IOHelper.log("found result:\t" + curEntry.myName + "\t"
+				// + curEntry.topScore);
 				if (maxQueueLength == 0) {
 					return resultSet;
 				}
 			}
 
-			for (int i = 0; i < curNode.TOP_K; i++) {
+			for (int i = 0; i < Math.min(curNode.topChilds.length,
+					curNode.TOP_K); i++) {
 				ScoredLinkedTrieNode potentialCandidate = curNode.topChilds[i];
 				if (candidateSet.size() < maxQueueLength) {
-					this.addToQueue(candidateSet, current,
+					this.addToQueue(candidateSet, curEntry,
 							curNode.topScores[i], potentialCandidate);
 				} else if (candidateSet.min().topScore < curNode.topScores[i]) {
-					this.addToQueue(candidateSet, current,
+					this.addToQueue(candidateSet, curEntry,
 							curNode.topScores[i], potentialCandidate);
 					// need to remove min to maintain max size of candidate set
 					candidateSet.dequeueMin();

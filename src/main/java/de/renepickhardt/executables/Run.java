@@ -2,9 +2,14 @@ package de.renepickhardt.executables;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import de.renepickhardt.utils.Config;
 import de.renepickhardt.utils.IOHelper;
+import de.renepickhardt.utils.SuggestTree;
+import de.renepickhardt.utils.SuggestTree.Node;
 import de.unikoblenz.stpr.ScoredLinkedTrie.ScoredLinkedTrie;
 import de.unikoblenz.stpr.ScoredLinkedTrie.TopScoreEntry;
 import de.unikoblenz.stpr.interfaces.trie.TrieInterface;
@@ -15,17 +20,17 @@ public class Run {
 	public static void main(String[] args) throws IOException, Exception {
 		ScoredLinkedTrie T = new ScoredLinkedTrie();
 
-		T.insertScored("AB", 6);
-		T.insertScored("AAA", 3);
-		T.insertScored("AAB", 2);
-		T.insertScored("AAC", 4);
-
-		IOHelper.log("Trie:");
-		IOHelper.log(T.toString());
-		IOHelper.log("Top Scores:");
-		IOHelper.log(T.root.printTopChildScores());
-		IOHelper.log("Trie:");
-		IOHelper.log(T.toString());
+		// T.insertScored("AB", 6);
+		// T.insertScored("AAA", 3);
+		// T.insertScored("AAB", 2);
+		// T.insertScored("AAC", 4);
+		//
+		// IOHelper.log("Trie:");
+		// IOHelper.log(T.toString());
+		// IOHelper.log("Top Scores:");
+		// IOHelper.log(T.root.printTopChildScores());
+		// IOHelper.log("Trie:");
+		// IOHelper.log(T.toString());
 
 		// fillTrie(new LinkedTrie());
 
@@ -69,26 +74,58 @@ public class Run {
 		String line = "";
 		int i = 0;
 		long baseMemory = Runtime.getRuntime().totalMemory();
+		HashMap<String, Integer> map = new HashMap<String, Integer>();
+		SuggestTree tree = new SuggestTree(5);
 		while ((line = br.readLine()) != null) {
-			T.insertScored(line.split("\t")[0],
-					Integer.parseInt(line.split("\t")[1]));
+			String key = line.split("\t")[0];
+			int value = Integer.parseInt(line.split("\t")[1]);
+			T.insertScored(key, value);
+			tree.put(key, value);
+			map.put(key, value);
 			if (++i % 10000 == 0) {
 				IOHelper.log("Items: " + i + "\t Memory:"
 						+ (Runtime.getRuntime().totalMemory() - baseMemory));
 			}
-			if (i > 100) {
+			if (i > 10000000) {
 				break;
 			}
 		}
+
 		// T.root.getSetTopScore();
-		IOHelper.log(T.toString());
+		// IOHelper.log(T.toString());
+
+		while (true) {
+			BufferedReader in = new BufferedReader(new InputStreamReader(
+					System.in));
+			String input;
+			input = in.readLine();
+			if (input.equals("-1")) {
+				break;
+			}
+			long start = System.nanoTime();
+			ArrayList<TopScoreEntry> res = T.getTopKList(input, 5);
+			long end = System.nanoTime();
+			System.out.println((end - start) / 1000 + " micro seconds");
+			for (TopScoreEntry entry : res) {
+				IOHelper.log(entry.topScore + "\t" + entry.myName);
+			}
+
+			start = System.nanoTime();
+			Node resTree = tree.getSuggestions(input);
+			end = System.nanoTime();
+			System.out.println((end - start) / 1000 + " micro seconds");
+
+			for (i = 0; i < resTree.size(); i++) {
+				IOHelper.log(resTree.getWeight(i) + "\t"
+						+ resTree.getSuggestion(i));
+			}
+
+		}
+
 		T = null;
 		Runtime.getRuntime().gc();
 		br.close();
 		IOHelper.log("Test finished.");
 		// IOHelper.log(T.toString());
-		for (TopScoreEntry entry : T.getTopKList("", 10)) {
-			IOHelper.log(entry.topScore + "\t" + entry.myName);
-		}
 	}
 }
