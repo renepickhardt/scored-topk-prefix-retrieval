@@ -52,19 +52,22 @@ public class ScoredLinkedTrie implements TrieInterface {
 	 * @return returns null if the prefix cannot be matched.
 	 */
 	public ArrayList<TopScoreEntry> getTopKList(String prefix, int k) {
-		if (prefix == null) {
-			return null;
-		}
-		ScoredLinkedTrieNode startNode = this.get(prefix);
-		if (startNode == null) {
-			return null;
-		}
+		// if (prefix == null) {
+		// return null;
+		// }
+		ScoredLinkedTrieNode startNode = this.root;// .get(prefix);
+		// if (startNode == null) {
+		// return null;
+		// }
 
 		IntervalHeap<TopScoreEntry> candidateSet = new IntervalHeap<TopScoreEntry>();
 		ArrayList<TopScoreEntry> resultSet = new ArrayList<TopScoreEntry>();
 
 		// TODO: it should be getTopScore (which is not implemented yet)
 		TopScoreEntry tmp = new TopScoreEntry(startNode, startNode.getScore());
+		tmp.myName = prefix;
+
+		candidateSet.add(tmp);
 
 		// TODO: maintain paths in the data structure or in the TopScoreEntries
 		int maxQueueLength = k;
@@ -76,47 +79,42 @@ public class ScoredLinkedTrie implements TrieInterface {
 			if (current.topScore == curNode.getScore()) {
 				maxQueueLength--;
 				resultSet.add(current);
+				if (maxQueueLength == 0) {
+					return resultSet;
+				}
 			}
 
-			// candidateSet.min().topScore
 			for (int i = 0; i < curNode.TOP_K; i++) {
 				ScoredLinkedTrieNode potentialCandidate = curNode.topChilds[i];
 				if (candidateSet.size() < maxQueueLength) {
-					candidateSet.add(new TopScoreEntry(potentialCandidate,
-							curNode.topScores[i]));
+					this.addToQueue(candidateSet, current,
+							curNode.topScores[i], potentialCandidate);
 				} else if (candidateSet.min().topScore < curNode.topScores[i]) {
-					candidateSet.add(new TopScoreEntry(potentialCandidate,
-							curNode.topScores[i]));
+					this.addToQueue(candidateSet, current,
+							curNode.topScores[i], potentialCandidate);
 					// need to remove min to maintain max size of candidate set
 					candidateSet.dequeueMin();
 				} else {
-					// TODO: check if this is really a valid break
+					// TODO: check if this is really a valid break (cold also be
+					// that at some point I need to maintain this loop)
 					// if so: set also a flag and use this for the next TODO
 					break;
 				}
 				// TODO: what happens if queue not full or last topscore was >
 				// min ==> have to do a manual search outsie of index! or accept
 				// that algorithm only has a high propability to be correct
-
 			}
-
 		}
+		return resultSet;
+	}
 
-		// for (int i = 0; i < startNode.TOP_K; i++) {
-		// ScoredLinkedTrieNode tmp = startNode.topChilds[i];
-		// TopScoreEntry tse = new TopScoreEntry(tmp, startNode.topScores[i]);
-		// topKSet.add(tse);
-		// tse = new TopScoreEntry(startNode.topChilds[i], -1
-		// * startNode.topScores[i]);
-		// reversedTopKSet.add(tse);
-		// }
-
-		// i found a real word.
-		if (startNode.getScore() != 0) {
-
-		}
-
-		return null;
+	private void addToQueue(IntervalHeap<TopScoreEntry> candidateSet,
+			TopScoreEntry current, int score,
+			ScoredLinkedTrieNode potentialCandidate) {
+		TopScoreEntry entry = new TopScoreEntry(potentialCandidate, score);
+		// TODO: expensive
+		entry.myName = current.myName + potentialCandidate.getChar();
+		candidateSet.add(entry);
 	}
 
 	@Override

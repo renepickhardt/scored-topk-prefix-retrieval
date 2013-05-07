@@ -154,18 +154,4 @@ public class ScoredLinkedTrieNode {
 		return out.trim();
 	}
 
-	public class TopScoreEntry implements Comparable<TopScoreEntry> {
-		public ScoredLinkedTrieNode n;
-		public int topScore;
-
-		public TopScoreEntry(ScoredLinkedTrieNode n, int s) {
-			this.topScore = s;
-			this.n = n;
-		}
-
-		public int compareTo(TopScoreEntry o) {
-			return o.topScore - this.topScore;
-		}
-	}
-
 }

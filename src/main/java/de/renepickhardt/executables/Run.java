@@ -6,6 +6,7 @@ import java.io.IOException;
 import de.renepickhardt.utils.Config;
 import de.renepickhardt.utils.IOHelper;
 import de.unikoblenz.stpr.ScoredLinkedTrie.ScoredLinkedTrie;
+import de.unikoblenz.stpr.ScoredLinkedTrie.TopScoreEntry;
 import de.unikoblenz.stpr.interfaces.trie.TrieInterface;
 
 public class Run {
@@ -85,15 +86,18 @@ public class Run {
 				IOHelper.log("Items: " + i + "\t Memory:"
 						+ (Runtime.getRuntime().totalMemory() - baseMemory));
 			}
-			if (i > 10000000) {
+			if (i > 1000) {
 				break;
 			}
 		}
 		T.root.getSetTopChildScores();
+		IOHelper.log("Test finished.");
 		// IOHelper.log(T.toString());
+		for (TopScoreEntry entry : T.getTopKList("", 10)) {
+			IOHelper.log(entry.topScore + "\t" + entry.myName);
+		}
 		T = null;
 		Runtime.getRuntime().gc();
 		br.close();
-		IOHelper.log("Test finished.");
 	}
 }
