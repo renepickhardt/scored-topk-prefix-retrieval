@@ -45,6 +45,36 @@ public class ScoredLinkedTrie implements TrieInterface {
 		this.add(s, 0);
 	}
 
+	public void insertScored(String s, Integer score) throws Exception {
+		LinkedList<ScoredLinkedTrieNode> path = new LinkedList<ScoredLinkedTrieNode>();
+		path.push(this.root);
+		for (int i = 0; i < s.length(); i++) {
+			// Iterate through internalNodes
+			path.push(path.peek().addGetChild(s.charAt(i), 0));
+		}
+
+		// Update EndNode
+		ScoredLinkedTrieNode endNode = path.pop();
+		endNode.setScore(score);
+		endNode.pushTop(endNode, score);
+
+		ScoredLinkedTrieNode childNode = endNode;
+		ScoredLinkedTrieNode parentNode = path.pop();
+		// Propagate Top Scores
+		while (true) {
+			if (childNode.getMaxTopScore() > score) {
+				break;
+			}
+			parentNode.updateTop(childNode, score);
+
+			childNode = parentNode;
+			if (path.size() == 0) {
+				break;
+			}
+			parentNode = path.pop();
+		}
+	}
+
 	/**
 	 * returns the top k Elements in a try matching a prefix. The prefix can be
 	 * empty but not null
@@ -116,37 +146,6 @@ public class ScoredLinkedTrie implements TrieInterface {
 		// TODO: expensive
 		entry.myName = current.myName + potentialCandidate.getChar();
 		candidateSet.add(entry);
-	}
-
-	public void insertScored(String s, Integer score) throws Exception {
-		LinkedList<ScoredLinkedTrieNode> path = new LinkedList<ScoredLinkedTrieNode>();
-		path.push(this.root);
-		for (int i = 0; i < s.length(); i++) {
-			// Iterate through internalNodes
-			path.push(path.peek().addGetChild(s.charAt(i), 0));
-		}
-
-		// Update EndNode
-		ScoredLinkedTrieNode endNode = path.pop();
-		endNode.setScore(score);
-		endNode.pushTop(endNode, score);
-
-		ScoredLinkedTrieNode childNode = endNode;
-		ScoredLinkedTrieNode parentNode = path.pop();
-		// Propagate Top Scores
-		while (true) {
-			if (childNode.getMaxTopScore() > score) {
-				break;
-			}
-			parentNode.updateTop(childNode, score);
-
-			childNode = parentNode;
-			if (path.size() == 0) {
-				break;
-			}
-			parentNode = path.pop();
-		}
-
 	}
 
 	@Override
