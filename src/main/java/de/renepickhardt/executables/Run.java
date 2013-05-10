@@ -84,7 +84,7 @@ public class Run {
 				IOHelper.log("Items: " + i + "\t Memory:"
 						+ (Runtime.getRuntime().totalMemory() - baseMemory));
 			}
-			if (i > 1000) {
+			if (i > 100000) {
 				break;
 			}
 		}

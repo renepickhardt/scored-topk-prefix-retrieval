@@ -107,11 +107,16 @@ public class ScoredLinkedTrie implements TrieInterface {
 		tmp.myName = prefix;
 
 		candidateSet.add(tmp);
+		System.out.println("added : " + tmp.myName
+				+ " as a potential candidate \t score: " + tmp.topScore);
 
 		// TODO: maintain paths in the data structure or in the TopScoreEntries
 		int maxQueueLength = k;
 		while (candidateSet.size() > 0 && resultSet.size() < k) {
 			TopScoreEntry curEntry = candidateSet.dequeueMax();
+			System.out.println("removing and processing : " + curEntry.myName
+					+ " as a potential candidate \t score: "
+					+ curEntry.topScore);
 
 			ScoredLinkedTrieNode curNode = curEntry.n;
 
@@ -123,6 +128,7 @@ public class ScoredLinkedTrie implements TrieInterface {
 				if (maxQueueLength == 0) {
 					return resultSet;
 				}
+				continue;
 			}
 
 			for (int i = 0; i < Math.min(curNode.topChilds.length,
@@ -137,7 +143,7 @@ public class ScoredLinkedTrie implements TrieInterface {
 					// need to remove min to maintain max size of candidate set
 					TopScoreEntry min = candidateSet.dequeueMin();
 					System.out.println("removed: " + min.myName
-							+ "as a potential candidate \t score: "
+							+ " as a potential candidate \t score: "
 							+ min.topScore);
 				} else {
 					// TODO: check if this is really a valid break (cold also be
@@ -161,7 +167,7 @@ public class ScoredLinkedTrie implements TrieInterface {
 		entry.myName = current.myName + potentialCandidate.getChar();
 		candidateSet.add(entry);
 		System.out.println("added: " + entry.myName
-				+ "as a potential candidate \t score: " + entry.topScore);
+				+ " as a potential candidate \t score: " + entry.topScore);
 	}
 
 	@Override
