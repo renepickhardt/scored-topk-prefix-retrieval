@@ -159,11 +159,29 @@ public class ScoredLinkedTrieNode {
 		for (int i = 0; i < this.topChilds.length; i++) {
 			if (this.topChilds[i] == childNode) {
 				this.topScores[i] = score;
+				// TODO: make this more efficient!
+				this.fixOrder();
 				return;
 			}
 		}
 		// notFound -> push
 		this.pushTop(childNode, score);
+	}
+
+	private void fixOrder() {
+		for (int i = 0; i < this.topChilds.length - 1; i++) {
+			if (this.topScores[i] < this.topScores[i + 1]) {
+				int tmpScore = this.topScores[i];
+				ScoredLinkedTrieNode tmpNode = this.topChilds[i];
+
+				this.topScores[i] = this.topScores[i + 1];
+				this.topChilds[i] = this.topChilds[i + 1];
+
+				this.topScores[i + 1] = tmpScore;
+				this.topChilds[i + 1] = tmpNode;
+				i = 0;
+			}
+		}
 	}
 
 	public int getMinTopScore() {
@@ -176,7 +194,11 @@ public class ScoredLinkedTrieNode {
 	}
 
 	public int getMaxTopScore() {
-		return this.topScores[0];
+		if (this.topScores.length > 0) {
+			return this.topScores[0];
+		} else {
+			return 0;
+		}
 	}
 
 	/*

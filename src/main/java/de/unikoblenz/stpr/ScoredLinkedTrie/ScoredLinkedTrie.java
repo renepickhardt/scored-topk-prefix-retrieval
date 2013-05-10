@@ -56,6 +56,8 @@ public class ScoredLinkedTrie implements TrieInterface {
 		// Update EndNode
 		ScoredLinkedTrieNode endNode = path.pop();
 		endNode.setScore(score);
+		// TODO: why endnode.pushTop(endNode) within function this and argument
+		// seem to be treated differently
 		endNode.pushTop(endNode, score);
 
 		ScoredLinkedTrieNode childNode = endNode;
