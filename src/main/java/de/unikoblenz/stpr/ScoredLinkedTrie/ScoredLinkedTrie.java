@@ -101,7 +101,7 @@ public class ScoredLinkedTrie implements TrieInterface {
 
 		// TODO: it should be getTopScore (which is not implemented yet)
 		TopScoreEntry tmp = new TopScoreEntry(startNode,
-				startNode.getTopScores()[0]);
+				startNode.getMaxTopScore());
 		tmp.myName = prefix;
 
 		candidateSet.add(tmp);
@@ -133,7 +133,10 @@ public class ScoredLinkedTrie implements TrieInterface {
 					this.addToQueue(candidateSet, curEntry,
 							curNode.topScores[i], potentialCandidate);
 					// need to remove min to maintain max size of candidate set
-					candidateSet.dequeueMin();
+					TopScoreEntry min = candidateSet.dequeueMin();
+					System.out.println("removed: " + min.myName
+							+ "as a potential candidate \t score: "
+							+ min.topScore);
 				} else {
 					// TODO: check if this is really a valid break (cold also be
 					// that at some point I need to maintain this loop)
@@ -155,6 +158,8 @@ public class ScoredLinkedTrie implements TrieInterface {
 		// TODO: expensive
 		entry.myName = current.myName + potentialCandidate.getChar();
 		candidateSet.add(entry);
+		System.out.println("added: " + entry.myName
+				+ "as a potential candidate \t score: " + entry.topScore);
 	}
 
 	@Override

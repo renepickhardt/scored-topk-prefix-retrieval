@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import de.renepickhardt.utils.Config;
 import de.renepickhardt.utils.IOHelper;
@@ -74,19 +73,18 @@ public class Run {
 		String line = "";
 		int i = 0;
 		long baseMemory = Runtime.getRuntime().totalMemory();
-		HashMap<String, Integer> map = new HashMap<String, Integer>();
 		SuggestTree tree = new SuggestTree(5);
+		T.insertScored("wissenIstMacht", 1000000);
 		while ((line = br.readLine()) != null) {
 			String key = line.split("\t")[0];
 			int value = Integer.parseInt(line.split("\t")[1]);
 			T.insertScored(key, value);
 			tree.put(key, value);
-			map.put(key, value);
 			if (++i % 10000 == 0) {
 				IOHelper.log("Items: " + i + "\t Memory:"
 						+ (Runtime.getRuntime().totalMemory() - baseMemory));
 			}
-			if (i > 10000000) {
+			if (i > 1000) {
 				break;
 			}
 		}
@@ -105,15 +103,18 @@ public class Run {
 			long start = System.nanoTime();
 			ArrayList<TopScoreEntry> res = T.getTopKList(input, 5);
 			long end = System.nanoTime();
-			System.out.println((end - start) / 1000 + " micro seconds");
+			System.out.println("\n" + (end - start) / 1000
+					+ " micro seconds for suggestions with PREFIX TRIE");
 			for (TopScoreEntry entry : res) {
 				IOHelper.log(entry.topScore + "\t" + entry.myName);
 			}
 
+			System.out.println("suggestions with suggest tree:\n");
 			start = System.nanoTime();
 			Node resTree = tree.getSuggestions(input);
 			end = System.nanoTime();
-			System.out.println((end - start) / 1000 + " micro seconds");
+			System.out.println("\n" + (end - start) / 1000
+					+ " micro seconds for suggestions with SUGGEST TREE");
 
 			for (i = 0; i < resTree.size(); i++) {
 				IOHelper.log(resTree.getWeight(i) + "\t"

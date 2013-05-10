@@ -11,6 +11,6 @@ public class TopScoreEntry implements Comparable<TopScoreEntry> {
 	}
 
 	public int compareTo(TopScoreEntry o) {
-		return o.topScore - this.topScore;
+		return this.topScore - o.topScore;
 	}
 }
