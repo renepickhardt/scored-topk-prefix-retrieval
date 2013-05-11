@@ -12,8 +12,6 @@ public interface TrieNodeInterface {
 	 * @return c
 	 */
 	public char getChar();
-	
-        public void setChar(char c);
         
 	/**
 	 * Returns child node with character c.
