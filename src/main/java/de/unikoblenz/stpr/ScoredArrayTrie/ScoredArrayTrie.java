@@ -61,4 +61,25 @@ public class ScoredArrayTrie {
     public String toString() {
         return root.toString();
     }
+
+    public void insert(String s, int score){
+        LinkedList<ScoredArrayTrieNode> path = new LinkedList<ScoredArrayTrieNode>();
+        path.add(root);
+        for (int i = 0; i < s.length() - 1; i++) {
+            path.push(path.peek().addGetChild(s.charAt(i),0));
+        }
+        
+        char c = s.charAt(s.length() - 1);
+        ScoredArrayTrieNode endNode = new ScoredArrayTrieNode(c, score);
+        
+        if (path.peek().getChild(c)== null){
+            path.peek().insertChid(endNode);
+        }
+        
+        path.peek().insertChid(endNode);
+        
+        
+        
+    }
+
 }

@@ -168,24 +168,24 @@ public class ScoredArrayTrieTest {
         T.add("C",3);
         
         List<TopScoreEntry> result = T.root.calcTopChilds();
-        assertEquals(3, result.get(0).topTreeScore);
+        assertEquals(3, result.get(0).score);
         assertEquals(T.root.getChild('C'), result.get(0).node);
-        assertEquals(2, result.get(1).topTreeScore);
+        assertEquals(2, result.get(1).score);
         assertEquals(T.root.getChild('B'), result.get(1).node);
         
         T.add("AA",4);
         result = T.root.calcTopChilds();
-        assertEquals(result.get(0).topTreeScore, 4);
+        assertEquals(result.get(0).score, 4);
         assertEquals(T.root.getChild('A'), result.get(0).node);
         
         T.add("AAB",5);
         result = T.root.calcTopChilds();
-        assertEquals(result.get(0).topTreeScore, 5);
+        assertEquals(result.get(0).score, 5);
         assertEquals(T.root.getChild('A'), result.get(0).node);
 
         T.add("BBBBBBBBBBBB",6);
         result = T.root.calcTopChilds();
-        assertEquals(result.get(0).topTreeScore, 6);
+        assertEquals(result.get(0).score, 6);
         assertEquals(T.root.getChild('B'), result.get(0).node);
         
         T = new ScoredArrayTrie();
