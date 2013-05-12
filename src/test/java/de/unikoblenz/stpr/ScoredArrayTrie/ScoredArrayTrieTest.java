@@ -83,6 +83,7 @@ public class ScoredArrayTrieTest {
 
     @Test
     public void testAddScore() {
+        System.out.println("addScore");
         ScoredArrayTrie T = new ScoredArrayTrie();
 
         // Cannot change root score
@@ -113,7 +114,7 @@ public class ScoredArrayTrieTest {
     
     @Test
     public void bulidTrie(){
-        System.out.println("find");
+        System.out.println("buldTrie");
         ScoredArrayTrie T = new ScoredArrayTrie();
         
         T.add("AA");
@@ -160,40 +161,42 @@ public class ScoredArrayTrieTest {
         assertEquals(T.root.calcMaxScore(),40);
     }
 
-    @Test
-    public void testTopChilds(){
-        ScoredArrayTrie T = new ScoredArrayTrie();
-        T.add("A",1);
-        T.add("B",2);
-        T.add("C",3);
-        
-        List<TopScoreEntry> result = T.root.calcTopChilds();
-        assertEquals(3, result.get(0).score);
-        assertEquals(T.root.getChild('C'), result.get(0).node);
-        assertEquals(2, result.get(1).score);
-        assertEquals(T.root.getChild('B'), result.get(1).node);
-        
-        T.add("AA",4);
-        result = T.root.calcTopChilds();
-        assertEquals(result.get(0).score, 4);
-        assertEquals(T.root.getChild('A'), result.get(0).node);
-        
-        T.add("AAB",5);
-        result = T.root.calcTopChilds();
-        assertEquals(result.get(0).score, 5);
-        assertEquals(T.root.getChild('A'), result.get(0).node);
-
-        T.add("BBBBBBBBBBBB",6);
-        result = T.root.calcTopChilds();
-        assertEquals(result.get(0).score, 6);
-        assertEquals(T.root.getChild('B'), result.get(0).node);
-        
-        T = new ScoredArrayTrie();
-        for (int i = ScoredArrayTrieNode.MIN_CHAR; i < ScoredArrayTrieNode.MAX_CHAR; i++) {
-            T.add("" + (char) i, i);
-        }
-        
-        result = T.root.calcTopChilds();
-        assertTrue(ScoredArrayTrieNode.TOP_K >= result.size());
-    }
+    
+//
+//    @Test
+//    public void testTopChilds(){
+//        ScoredArrayTrie T = new ScoredArrayTrie();
+//        T.add("A",1);
+//        T.add("B",2);
+//        T.add("C",3);
+//        
+//        List<TopScoreEntry> result = T.root.calcTopChilds();
+//        assertEquals(3, result.get(0).score);
+//        assertEquals(T.root.getChild('C'), result.get(0).node);
+//        assertEquals(2, result.get(1).score);
+//        assertEquals(T.root.getChild('B'), result.get(1).node);
+//        
+//        T.add("AA",4);
+//        result = T.root.calcTopChilds();
+//        assertEquals(result.get(0).score, 4);
+//        assertEquals(T.root.getChild('A'), result.get(0).node);
+//        
+//        T.add("AAB",5);
+//        result = T.root.calcTopChilds();
+//        assertEquals(result.get(0).score, 5);
+//        assertEquals(T.root.getChild('A'), result.get(0).node);
+//
+//        T.add("BBBBBBBBBBBB",6);
+//        result = T.root.calcTopChilds();
+//        assertEquals(result.get(0).score, 6);
+//        assertEquals(T.root.getChild('B'), result.get(0).node);
+//        
+//        T = new ScoredArrayTrie();
+//        for (int i = ScoredArrayTrieNode.MIN_CHAR; i < ScoredArrayTrieNode.MAX_CHAR; i++) {
+//            T.add("" + (char) i, i);
+//        }
+//        
+//        result = T.root.calcTopChilds();
+//        assertTrue(ScoredArrayTrieNode.TOP_K >= result.size());
+//    }
 }

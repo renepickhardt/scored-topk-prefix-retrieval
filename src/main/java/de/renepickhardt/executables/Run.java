@@ -9,6 +9,7 @@ import de.renepickhardt.utils.Config;
 import de.renepickhardt.utils.IOHelper;
 import de.renepickhardt.utils.SuggestTree;
 import de.renepickhardt.utils.SuggestTree.Node;
+import de.unikoblenz.stpr.ScoredArrayTrie.ScoredArrayTrie;
 import de.unikoblenz.stpr.ScoredLinkedTrie.ScoredLinkedTrie;
 import de.unikoblenz.stpr.ScoredLinkedTrie.TopScoreEntry;
 import de.unikoblenz.stpr.interfaces.trie.TrieInterface;
@@ -33,7 +34,7 @@ public class Run {
 
 		// fillTrie(new LinkedTrie());
 
-		fillScoredTrie(new ScoredLinkedTrie());
+		fillScoredTrie(new ScoredArrayTrie());
 		//
 		// fillTrie(new ArrayTrie());
 		//
@@ -65,7 +66,7 @@ public class Run {
 		IOHelper.log("Test finished.");
 	}
 
-	public static void fillScoredTrie(ScoredLinkedTrie T) throws IOException,
+	public static void fillScoredTrie(ScoredArrayTrie T) throws IOException,
 			Exception {
 		IOHelper.log("Start testing: " + T.getClass().getName());
 
@@ -74,59 +75,60 @@ public class Run {
 		int i = 0;
 		long baseMemory = Runtime.getRuntime().totalMemory();
 		SuggestTree tree = new SuggestTree(5);
-		T.insertScored("wissenIstMacht", 1000000);
+		T.add("wissenIstMacht", 1000000);
 		while ((line = br.readLine()) != null) {
 			String key = line.split("\t")[0];
 			int value = Integer.parseInt(line.split("\t")[1]);
-			T.insertScored(key, value);
+			T.add(key, value);
 			tree.put(key, value);
 			if (++i % 10000 == 0) {
 				IOHelper.log("Items: " + i + "\t Memory:"
 						+ (Runtime.getRuntime().totalMemory() - baseMemory));
 			}
-			if (i > 100000) {
+			if (i > 1000) {
 				break;
 			}
 		}
-
-		// T.root.getSetTopScore();
-		// IOHelper.log(T.toString());
-
-		while (true) {
-			BufferedReader in = new BufferedReader(new InputStreamReader(
-					System.in));
-			String input;
-			input = in.readLine();
-			if (input.equals("-1")) {
-				break;
-			}
-			long start = System.nanoTime();
-			ArrayList<TopScoreEntry> res = T.getTopKList(input, 5);
-			long end = System.nanoTime();
-			System.out.println("\n" + (end - start) / 1000
-					+ " micro seconds for suggestions with PREFIX TRIE");
-			for (TopScoreEntry entry : res) {
-				IOHelper.log(entry.topScore + "\t" + entry.myName);
-			}
-
-			System.out.println("suggestions with suggest tree:\n");
-			start = System.nanoTime();
-			Node resTree = tree.getSuggestions(input);
-			end = System.nanoTime();
-			System.out.println("\n" + (end - start) / 1000
-					+ " micro seconds for suggestions with SUGGEST TREE");
-
-			for (i = 0; i < resTree.size(); i++) {
-				IOHelper.log(resTree.getWeight(i) + "\t"
-						+ resTree.getSuggestion(i));
-			}
-
-		}
-
-		T = null;
-		Runtime.getRuntime().gc();
-		br.close();
-		IOHelper.log("Test finished.");
-		// IOHelper.log(T.toString());
+                T.root.recSetMaxScore();
+                T.root.recSetTopChilds();
+                
+		IOHelper.log(T.toString());
+//
+//		while (true) {
+//			BufferedReader in = new BufferedReader(new InputStreamReader(
+//					System.in));
+//			String input;
+//			input = in.readLine();
+//			if (input.equals("-1")) {
+//				break;
+//			}
+//			long start = System.nanoTime();
+//			ArrayList<TopScoreEntry> res = T.getTopKList(input, 5);
+//			long end = System.nanoTime();
+//			System.out.println("\n" + (end - start) / 1000
+//					+ " micro seconds for suggestions with PREFIX TRIE");
+//			for (TopScoreEntry entry : res) {
+//				IOHelper.log(entry.topScore + "\t" + entry.myName);
+//			}
+//
+//			System.out.println("suggestions with suggest tree:\n");
+//			start = System.nanoTime();
+//			Node resTree = tree.getSuggestions(input);
+//			end = System.nanoTime();
+//			System.out.println("\n" + (end - start) / 1000
+//					+ " micro seconds for suggestions with SUGGEST TREE");
+//
+//			for (i = 0; i < resTree.size(); i++) {
+//				IOHelper.log(resTree.getWeight(i) + "\t"
+//						+ resTree.getSuggestion(i));
+//			}
+//
+//		}
+//
+//		T = null;
+//		Runtime.getRuntime().gc();
+//		br.close();
+//		IOHelper.log("Test finished.");
+//		// IOHelper.log(T.toString());
 	}
 }

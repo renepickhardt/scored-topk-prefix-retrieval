@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 
-public class ScoredArrayTrieNode implements TrieNodeInterface {
+public class ScoredArrayTrieNode implements TrieNodeInterface, Comparable<ScoredArrayTrieNode> {
 
     // value of node is immutable signed byte in [-128 .. 127]
     // Character conversion is done via (byte) / (char)
@@ -17,15 +17,14 @@ public class ScoredArrayTrieNode implements TrieNodeInterface {
     // Array for child nodes
     private ScoredArrayTrieNode[] children;
     // ASCII range covered by children
-    public static int MIN_CHAR = 44;
-    public static int MAX_CHAR = 123;
+    public static int MIN_CHAR = 0;
+    public static int MAX_CHAR = 256;
     private static final int CHILD_ARRAY_LEN = MAX_CHAR - MIN_CHAR;
-
     // Score
     public int score;
-//    public int maxScore; // maximum score of subtrie
+    public int maxScore; // maximum score of subtrie with root this.
     public static int TOP_K = 5;
-    public List<TopScoreEntry> topChilds;
+    public List<ScoredArrayTrieNode> topChilds; // TOP_K children sorted by maxScore
 
     public ScoredArrayTrieNode(char c, int s) {
         this.value = (byte) c;
@@ -33,10 +32,14 @@ public class ScoredArrayTrieNode implements TrieNodeInterface {
 
         // we do not want to initialize an array here to save memory
         this.children = null;
-        this.topChilds = new LinkedList<TopScoreEntry>();
-        topChilds.add(new TopScoreEntry(this, score));
+
+        this.maxScore = s;
+        this.topChilds = new LinkedList<ScoredArrayTrieNode>();
     }
 
+    /*
+     * BARE TRIE METHODS - NO SCORE HANDLING AT ALL
+     */
     public char getChar() {
         return (char) this.value;
     }
@@ -66,7 +69,7 @@ public class ScoredArrayTrieNode implements TrieNodeInterface {
      */
     public ScoredArrayTrieNode[] getChildren() {
         if (children == null) {
-            IOHelper.log("Initializing child Array");
+            //  IOHelper.log("Initializing child Array");
             children = new ScoredArrayTrieNode[CHILD_ARRAY_LEN];
         }
         return children;
@@ -102,28 +105,63 @@ public class ScoredArrayTrieNode implements TrieNodeInterface {
 
     /**
      * Returns child node corresponding to character if it exists if not, it
-     * generates a new node for this character and inserts it as a child
+     * generates a new node with score 0 for this character and inserts it as a
+     * child
      *
      * @param character
      * @return child
      */
-    public ScoredArrayTrieNode addGetChild(char c, int s) {
+    public ScoredArrayTrieNode addGetChild(char c) {
         ScoredArrayTrieNode n = this.getChild(c);
         if (n == null) {
-            n = new ScoredArrayTrieNode(c, s);
+            n = new ScoredArrayTrieNode(c, 0);
             this.setChild(n);
         }
         return n;
     }
 
+    /*
+     * SCORES AND TOP CHILDS
+     */
     public int getScore() {
         return score;
     }
 
     /**
-     * Computes maximum score of the subtrie with root this.
+     * Setter for score variable. Warning: Does not update maxScore! Use
+     * updateMaxScore();
+     */
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public int getMaxScore() {
+        return maxScore;
+    }
+
+    public void setMaxScore(int maxScore) {
+        this.maxScore = maxScore;
+    }
+
+    /**
+     * Updates maxScore variable. Assumes topScore is set correctly for childs;
+     */
+    public void updateMaxScore() {
+        int max = this.score;
+        for (ScoredArrayTrieNode n : getChildren()) {
+            if (n == null) {
+                continue;
+            }
+            max = Math.max(max, n.getMaxScore());
+        }
+        this.maxScore = max;
+    }
+
+    /**
+     * Recursively computes maximum score of the subtrie with root this. No
+     * assumptions on children
      *
-     * @return
+     * @return maxScore;
      */
     public int calcMaxScore() {
         if (isLeaf()) {
@@ -140,67 +178,99 @@ public class ScoredArrayTrieNode implements TrieNodeInterface {
     }
 
     /**
-     * Calculates topChild array. Consisting of Entries (node, maxScore) where
-     * node is a child node and maxSocre is the maximum score of the trie with
-     * root n. The topChild list is sorted by maxScore and has a maximal lenght
-     * of TOP_K
+     * Recursively set maxScore for the subtrie with root this.
+     *
+     * @return maxScore
      */
-    public List<TopScoreEntry> calcTopChilds() {
-        PriorityQueue<TopScoreEntry> ranking = new PriorityQueue<TopScoreEntry>();
-        ranking.add(new TopScoreEntry(this, this.score));
+    public int recSetMaxScore() {
+        if (isLeaf()) {
+            setMaxScore(score);
+            return score;
+        }
+
+        int max = score;
         for (ScoredArrayTrieNode n : getChildren()) {
             if (n == null) {
                 continue;
             }
-            ranking.add(new TopScoreEntry(n, n.calcMaxScore()));
+            max = Math.max(max, n.recSetMaxScore());
         }
-
-        topChilds = new LinkedList<TopScoreEntry>();
-        for (int i = 0; i < TOP_K; i++) {
-            if (ranking.size() == 0) {
-                break;
-            }
-            topChilds.add(ranking.poll());
-        }
-        return topChilds;
+        setMaxScore(max);
+        return max;
     }
 
     /**
-     * Recursively sets the topChilds Array for all nodes in the subtrie
-     * with root this.
-     * @return maxScore
+     * Calculates topChild List. List of Top-k child nodes sorted by maxScore.
+     * Assumes maxScores is properly set for children.
      */
-    public int recSetTopChilds() {
-        // leafs have correct top scores
-        if (isLeaf()) {
-            return score;
-        }
+    public List<ScoredArrayTrieNode> calcTopChilds() {
+        PriorityQueue<ScoredArrayTrieNode> ranking = new PriorityQueue<ScoredArrayTrieNode>();
 
-        PriorityQueue<TopScoreEntry> ranking = new PriorityQueue<TopScoreEntry>();
-        ranking.add(new TopScoreEntry(this, this.score));
         for (ScoredArrayTrieNode c : getChildren()) {
             if (c == null) {
                 continue;
             }
-            // Here the recursion happens
-            ranking.add(new TopScoreEntry(c, c.recSetTopChilds()));
+            ranking.add(c);
         }
 
-        topChilds = new LinkedList<TopScoreEntry>();
+        LinkedList<ScoredArrayTrieNode> myTopChilds = new LinkedList<ScoredArrayTrieNode>();
         for (int i = 0; i < TOP_K; i++) {
-            if (ranking.size() == 0) {
+            if (ranking.size() > 0) {
+                // Priority Queue has least element first
+                myTopChilds.add(ranking.poll());
+            } else {
                 break;
             }
-            topChilds.add(ranking.poll());
         }
-        return topChilds.get(0).score;
+        return myTopChilds;
     }
 
-    public void insertTopChildEntry(TopScoreEntry e) {
+    public void updateTopChilds() {
+        this.topChilds = calcTopChilds();
+    }
+
+    public void recSetTopChilds() {
+        updateTopChilds();
+        if (isLeaf()) {
+            return;
+        }
+        for (ScoredArrayTrieNode c : getChildren()) {
+            if (c == null) {
+                continue;
+            }
+            c.recSetTopChilds();
+        }
+    }
+
+    public int compareTo(ScoredArrayTrieNode o) {
+        return o.getMaxScore() - this.getMaxScore();
+    }
+
+
+    /*
+     * AUTOMATIC UPDATING OF SCORES ON INSERT
+     */
+    /**
+     * Inserts node n as child. Assumes: this.maxScore, this.topChilds are
+     * correctly set. Assumes: n.getMaxScore() works properly Updates: maxScore,
+     * topChilds to correct values.
+     *
+     * @param n
+     */
+    public void insertNewChild(ScoredArrayTrieNode n) {
+        if (getChild(n.getChar()) != null) {
+            throw new IllegalArgumentException("Child node already present for character " + n.getChar());
+        }
+        setChild(n);
+        maxScore = Math.max(maxScore, n.getMaxScore());
+        insertTopChild(n);
+    }
+
+    public void insertTopChild(ScoredArrayTrieNode n) {
         int i = 0;
         // Search position for e
-        for (TopScoreEntry f : topChilds) {
-            if (e.score > f.score) {
+        for (ScoredArrayTrieNode t : topChilds) {
+            if (n.getMaxScore() > t.getMaxScore()) {
                 break;
             }
             i++;
@@ -208,7 +278,7 @@ public class ScoredArrayTrieNode implements TrieNodeInterface {
 
         // Insert e if not worse than last element
         if (i < TOP_K - 1) {
-            topChilds.add(i, e);
+            topChilds.add(i, n);
         }
 
         // Truncate topChilds
@@ -217,32 +287,23 @@ public class ScoredArrayTrieNode implements TrieNodeInterface {
         }
     }
 
-    public void removeTopEntry(ScoredArrayTrieNode n) {
-        for (TopScoreEntry f : topChilds) {
-            if (f.node == n) {
-                topChilds.remove(f);
-                return;
-            }
-        }
-    }
-
     /**
-     * Inserts n as child node and updates topChilds
+     * Sets child c to score s. Updates: maxScore, topChilds of this and child.
+     * Assumes: There is a child with character c.
      *
-     * @param n
+     * @param c
+     * @param s
      */
-    public void insertChid(ScoredArrayTrieNode n) {
-        ScoredArrayTrieNode oldChild = getChild(n.getChar());
-        if (oldChild != null) {
-            removeTopEntry(oldChild);
+    public void updateChildNode(char c, int s) {
+        ScoredArrayTrieNode n = getChild(c);
+        n.setScore(s);
+        n.updateMaxScore();
+
+        updateMaxScore();
+        while (topChilds.contains(n)) {
+            topChilds.remove(n);
         }
-
-        insertTopChildEntry(new TopScoreEntry(n, n.getTopScore()));
-        setChild(n);
-    }
-
-    public int getTopScore() {
-        return topChilds.get(0).score;
+        insertTopChild(n);
     }
 
     @Override
@@ -254,6 +315,14 @@ public class ScoredArrayTrieNode implements TrieNodeInterface {
         return out;
     }
 
+    public String topChildString() {
+        String topC = "";
+        for (ScoredArrayTrieNode t : topChilds) {
+            topC += t.getChar() + "";
+        }
+        return topC;
+    }
+
     private ArrayList<String> recString() {
         ArrayList<String> lines = new ArrayList<String>();
         Boolean fisrtLine = true;
@@ -263,15 +332,15 @@ public class ScoredArrayTrieNode implements TrieNodeInterface {
             }
             for (String subline : n.recString()) {
                 if (fisrtLine) {
-                    lines.add(this.getChar() + subline);
+                    lines.add(String.format("%s{%d}[%d|%s]\t", getChar(), getScore(), getMaxScore(), topChildString()) + subline);
                 } else {
-                    lines.add(" " + subline);
+                    lines.add("\t\t" + subline);
                 }
                 fisrtLine = false;
             }
         }
         if (fisrtLine) {
-            lines.add("" + this.getChar());
+            lines.add(String.format("%s{%d}[%d]", getChar(), getScore(), getMaxScore()));
         }
         return lines;
     }

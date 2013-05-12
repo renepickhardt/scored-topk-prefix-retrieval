@@ -9,7 +9,7 @@ import java.util.List;
 public class ScoredArrayTrie {
     // Variables
 
-    ScoredArrayTrieNode root;
+    public ScoredArrayTrieNode root;
 
     // Constructor
     public ScoredArrayTrie() {
@@ -19,16 +19,21 @@ public class ScoredArrayTrie {
     // Methods
     /**
      * Adds a string to the Trie.
+     * If the string is not present new nodes are created.
+     * If the string is already there, the score is overwritten with
+     * the provided score.
+     * The root node is not modified
      */
     public void add(String s, int score) {
-        if (s.equals("")) {
+        if (s.length() == 0) {
             return;
         }
         ScoredArrayTrieNode last = root;
-        for (int i = 0; i < s.length() - 1; i++) {
-            last = last.addGetChild(s.charAt(i), 0);
+        for (int i = 0; i < s.length(); i++) {
+            last = last.addGetChild(s.charAt(i));
         }
-        last.setChild(new ScoredArrayTrieNode(s.charAt(s.length() - 1), score));
+        last.setScore(score);
+        // last.updateMaxScore();
     }
 
     // Default score = 1
@@ -62,24 +67,13 @@ public class ScoredArrayTrie {
         return root.toString();
     }
 
-    public void insert(String s, int score){
-        LinkedList<ScoredArrayTrieNode> path = new LinkedList<ScoredArrayTrieNode>();
-        path.add(root);
-        for (int i = 0; i < s.length() - 1; i++) {
-            path.push(path.peek().addGetChild(s.charAt(i),0));
-        }
-        
-        char c = s.charAt(s.length() - 1);
-        ScoredArrayTrieNode endNode = new ScoredArrayTrieNode(c, score);
-        
-        if (path.peek().getChild(c)== null){
-            path.peek().insertChid(endNode);
-        }
-        
-        path.peek().insertChid(endNode);
-        
-        
-        
-    }
+//    public void insert(String s, int score){
+//        LinkedList<ScoredArrayTrieNode> path = new LinkedList<ScoredArrayTrieNode>();
+//        path.add(root);
+//        for (int i = 0; i < s.length() - 1; i++) {
+//            path.push(path.peek().addGetChild(s.charAt(i),0));
+//        }
+//        
+//    }
 
 }
