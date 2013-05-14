@@ -16,6 +16,8 @@ public class ScoredArrayTrieNode implements TrieNodeInterface, Comparable<Scored
     // Array for child nodes
     private ScoredArrayTrieNode[] children;
     
+    public String word;
+    
     // ASCII range covered by children
     public static int MIN_CHAR = 0;
     public static int MAX_CHAR = 256;
