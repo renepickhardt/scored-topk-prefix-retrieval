@@ -33,6 +33,7 @@ public class ScoredArrayTrie {
 			last = last.addGetChild(s.charAt(i));
 		}
 		last.setScore(score);
+                last.setWord(s);
 		// last.updateMaxScore();
 	}
 
