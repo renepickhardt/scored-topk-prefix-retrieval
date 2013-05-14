@@ -81,8 +81,14 @@ public class ScoredArrayTrieTest {
             List<ScoredArrayTrieNode> path = T.find(s);
             assertNotNull(path);
 
+            System.out.println("TestingAdd");
             for (int i = 0; i < s.length(); i++) {
+                System.out.print("-" + path.get(i + 1).getChar());
+                if (path.get(i + 1).getChar() != s.charAt(i)){
+                 System.out.println("\n\n\nERROR at position " + i + " char " + (int)s.charAt(i) + "/" + (int)path.get(i + 1).getChar() + "\n\n\n ");
+                }
                 assertEquals(path.get(i + 1).getChar(), s.charAt(i));
+                
             }
 
         }
@@ -238,23 +244,20 @@ public class ScoredArrayTrieTest {
         checkResults("wher");
         checkResults("where");
         checkResults("X");
-        T.root.recSetMaxScore();
-        T.root.recSetTopChilds();
 
         setupTries(5);
         addAlphabeth("", 0);
 
         T.root.recSetMaxScore();
         T.root.recSetTopChilds();
-
         checkResults("X");
         
         addAlphabeth("A", 10);
         addAlphabeth("AA", 10);
         addAlphabeth("AAA", 10);
+        
         T.root.recSetMaxScore();
         T.root.recSetTopChilds();
-
         checkResults("A");
         checkResults("B");
         checkResults("X");
