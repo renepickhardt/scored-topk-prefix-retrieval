@@ -210,6 +210,9 @@ public class ScoredArrayTrieTest {
     public void testGetTopK() {
         // 15 is bigger thant the cache in ScoredArrayTrie so overflows may occure
         setupTries(5);
+        T.root.recSetMaxScore();
+        T.root.recSetTopChilds();
+       
         // empty results
         checkResults("X");
 
@@ -226,6 +229,8 @@ public class ScoredArrayTrieTest {
         addToTries("whereas", 3548);
         addToTries("whilst", 1494);
         addToTries("whereby", 1050);
+        T.root.recSetMaxScore();
+        T.root.recSetTopChilds();
 
         checkResults("w");
         checkResults("wh");
@@ -233,14 +238,22 @@ public class ScoredArrayTrieTest {
         checkResults("wher");
         checkResults("where");
         checkResults("X");
+        T.root.recSetMaxScore();
+        T.root.recSetTopChilds();
 
         setupTries(5);
         addAlphabeth("", 0);
+
+        T.root.recSetMaxScore();
+        T.root.recSetTopChilds();
+
         checkResults("X");
         
         addAlphabeth("A", 10);
         addAlphabeth("AA", 10);
         addAlphabeth("AAA", 10);
+        T.root.recSetMaxScore();
+        T.root.recSetTopChilds();
 
         checkResults("A");
         checkResults("B");
