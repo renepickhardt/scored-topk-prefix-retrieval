@@ -129,6 +129,7 @@ public class ScoredLinkedTrie implements TrieInterface {
 					return resultSet;
 				}
 				continue;
+                                // TODO: Push curr entry in other loop to queue.
 			}
 
 			for (int i = 0; i < Math.min(curNode.topChilds.length,
@@ -162,7 +163,7 @@ public class ScoredLinkedTrie implements TrieInterface {
 	private void addToQueue(IntervalHeap<TopScoreEntry> candidateSet,
 			TopScoreEntry current, int score,
 			ScoredLinkedTrieNode potentialCandidate) {
-		TopScoreEntry entry = new TopScoreEntry(potentialCandidate, score);
+    		TopScoreEntry entry = new TopScoreEntry(potentialCandidate, score);
 		// TODO: expensive
 		entry.myName = current.myName + potentialCandidate.getChar();
 		candidateSet.add(entry);

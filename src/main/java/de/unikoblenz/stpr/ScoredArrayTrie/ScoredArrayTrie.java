@@ -67,13 +67,21 @@ public class ScoredArrayTrie {
         return root.toString();
     }
 
-//    public void insert(String s, int score){
-//        LinkedList<ScoredArrayTrieNode> path = new LinkedList<ScoredArrayTrieNode>();
-//        path.add(root);
-//        for (int i = 0; i < s.length() - 1; i++) {
-//            path.push(path.peek().addGetChild(s.charAt(i),0));
-//        }
-//        
-//    }
-
+    /**
+     * Finds top-k words stored in the trie that match prefix.
+     * Assumes: trie is properly setup with topChilds and maxScores
+     * Returns: Sorted list of resuts. Each result contains a string (= retireved word)
+     * and the corresponding score in an SearchResult object.
+     * 
+     * If no results are present null is returned.
+     * 
+     * @param prefix
+     * @param k
+     * @return resultList
+     */
+    public List<SearchResult> getTopK(String prefix, final int k){
+        return null;
+    }
+    
+    
 }

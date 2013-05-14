@@ -10,16 +10,17 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 public class ScoredArrayTrieNode implements TrieNodeInterface, Comparable<ScoredArrayTrieNode> {
-
     // value of node is immutable signed byte in [-128 .. 127]
     // Character conversion is done via (byte) / (char)
     private final byte value;
     // Array for child nodes
     private ScoredArrayTrieNode[] children;
+    
     // ASCII range covered by children
     public static int MIN_CHAR = 0;
     public static int MAX_CHAR = 256;
     private static final int CHILD_ARRAY_LEN = MAX_CHAR - MIN_CHAR;
+    
     // Score
     public int score;
     public int maxScore; // maximum score of subtrie with root this.
@@ -102,6 +103,7 @@ public class ScoredArrayTrieNode implements TrieNodeInterface, Comparable<Scored
         }
         return getChildren()[childIndex(c)];
     }
+    
 
     /**
      * Returns child node corresponding to character if it exists if not, it
@@ -145,6 +147,7 @@ public class ScoredArrayTrieNode implements TrieNodeInterface, Comparable<Scored
 
     /**
      * Updates maxScore variable. Assumes topScore is set correctly for childs;
+     * @Warning inefficient if prior knowledge present.
      */
     public void updateMaxScore() {
         int max = this.score;
@@ -204,8 +207,9 @@ public class ScoredArrayTrieNode implements TrieNodeInterface, Comparable<Scored
      * Assumes maxScores is properly set for children.
      */
     public List<ScoredArrayTrieNode> calcTopChilds() {
+        //TODO: use interval Heaps
         PriorityQueue<ScoredArrayTrieNode> ranking = new PriorityQueue<ScoredArrayTrieNode>();
-
+        
         for (ScoredArrayTrieNode c : getChildren()) {
             if (c == null) {
                 continue;

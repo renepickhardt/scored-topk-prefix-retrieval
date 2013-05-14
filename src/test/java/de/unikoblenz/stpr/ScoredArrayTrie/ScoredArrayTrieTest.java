@@ -6,6 +6,7 @@ package de.unikoblenz.stpr.ScoredArrayTrie;
 
 import de.unikoblenz.stpr.ScoredArrayTrie.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
 import org.junit.After;
@@ -199,4 +200,53 @@ public class ScoredArrayTrieTest {
 //        result = T.root.calcTopChilds();
 //        assertTrue(ScoredArrayTrieNode.TOP_K >= result.size());
 //    }
+    
+    
+    @Test
+    public void testGetTopK(){
+        ScoredArrayTrie T = new ScoredArrayTrie();
+        
+        T.add("which", 249968);
+        T.add("when", 73492);
+        T.add("where", 55024);
+        T.add("while", 44662);
+        T.add("what", 24407);
+        T.add("whose", 11803);
+        T.add("white", 8883);
+        T.add("whether", 8830);
+        T.add("whom", 8527);
+        T.add("whole", 6224);
+        T.add("whereas", 3548);
+        T.add("whilst", 1494);
+        T.add("whereby", 1050);
+        
+        List<SearchResult> result = T.getTopK("wh", 3);
+        
+        Iterator<SearchResult> i = result.iterator();
+        SearchResult curResult = i.next();
+        assertEquals(curResult.name, "which");
+        assertEquals(curResult.score, 249968);
+
+        curResult = i.next();
+        assertEquals(curResult.name, "when");
+        assertEquals(curResult.score, 73492);
+
+        curResult = i.next();
+        assertEquals(curResult.name, "where");
+        assertEquals(curResult.score, 55024);
+
+        assertFalse(i.hasNext());
+        
+        // Empty List
+        result = T.getTopK("X", 3);
+        assertNull(result);
+        
+        // 
+        
+    }
+    
+    
+    
+    
+    
 }
