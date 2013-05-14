@@ -4,9 +4,6 @@
  */
 package de.unikoblenz.stpr.ScoredArrayTrie;
 
-import de.renepickhardt.utils.IOHelper;
-import de.renepickhardt.utils.SuggestTree;
-import de.unikoblenz.stpr.ScoredArrayTrie.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -22,10 +19,11 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import de.renepickhardt.utils.IOHelper;
 import de.renepickhardt.utils.SuggestTree;
 
 /**
- * 
+ *
  * @author hartmann
  */
 public class ScoredArrayTrieTest {
@@ -84,11 +82,11 @@ public class ScoredArrayTrieTest {
             System.out.println("TestingAdd");
             for (int i = 0; i < s.length(); i++) {
                 System.out.print("-" + path.get(i + 1).getChar());
-                if (path.get(i + 1).getChar() != s.charAt(i)){
-                 System.out.println("\n\n\nERROR at position " + i + " char " + (int)s.charAt(i) + "/" + (int)path.get(i + 1).getChar() + "\n\n\n ");
+                if (path.get(i + 1).getChar() != s.charAt(i)) {
+                    System.out.println("\n\n\nERROR at position " + i + " char " + (int) s.charAt(i) + "/" + (int) path.get(i + 1).getChar() + "\n\n\n ");
                 }
                 assertEquals(path.get(i + 1).getChar(), s.charAt(i));
-                
+
             }
 
         }
@@ -218,7 +216,7 @@ public class ScoredArrayTrieTest {
         setupTries(5);
         T.root.recSetMaxScore();
         T.root.recSetTopChilds();
-       
+
         // empty results
         checkResults("X");
 
@@ -251,11 +249,11 @@ public class ScoredArrayTrieTest {
         T.root.recSetMaxScore();
         T.root.recSetTopChilds();
         checkResults("X");
-        
-        addAlphabeth("A", 10);
-        addAlphabeth("AA", 10);
-        addAlphabeth("AAA", 10);
-        
+
+        addAlphabeth("A", 11);
+        addAlphabeth("AA", 12);
+        addAlphabeth("AAA", 13);
+
         T.root.recSetMaxScore();
         T.root.recSetTopChilds();
         checkResults("A");
@@ -266,7 +264,6 @@ public class ScoredArrayTrieTest {
         checkResults("AX");
         checkResults("AAA");
     }
-    
     public SuggestTree sTree;
     public ScoredArrayTrie T;
     public int maxResults;
@@ -284,19 +281,20 @@ public class ScoredArrayTrieTest {
 
     public void checkResults(String prefix) {
         IOHelper.log("Check results for " + prefix);
-        SuggestTree.Node resTree = sTree.getSuggestions(prefix);
-        List<SearchResult> res = T.getTopK(prefix, maxResults);
+        SuggestTree.Node resTree = this.sTree.getSuggestions(prefix);
+        List<SearchResult> res = this.T.getTopK(prefix, this.maxResults);
 
         if (resTree == null) { // no prefix found
             assertNull(res);
             return;
         }
 
-        IOHelper.log("* Found: " + resTree.size() + " results." );
+        IOHelper.log("* Found: " + resTree.size() + " results.");
         assertEquals(resTree.size(), res.size());
 
         for (int i = 0; i < res.size(); i++) {
-            IOHelper.log("* hit: " + resTree.getSuggestion(i)+ " - " + res.get(i) );
+            IOHelper.log("* hit: " + resTree.getSuggestion(i) + " - "
+                    + res.get(i).name + " - " + res.get(i).score);
             assertEquals(resTree.getWeight(i), res.get(i).score);
             assertEquals(resTree.getSuggestion(i), res.get(i).name);
         }
