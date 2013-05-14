@@ -77,8 +77,17 @@ public class Run {
 		while ((line = br.readLine()) != null) {
 			String key = line.split("\t")[0];
 			int value = Integer.parseInt(line.split("\t")[1]);
-			T.add(key, value);
-			tree.put(key, value);
+			try {
+				T.add(key, value);
+			} catch (Exception e) {
+				IOHelper.log("cannot add to trie: " + key);
+			}
+			try {
+				tree.put(key, value);
+
+			} catch (Exception e) {
+				IOHelper.log("cannot add to SuggestTree: " + key);
+			}
 			if (++i % 10000 == 0) {
 				IOHelper.log("Items: " + i + "\t Memory:"
 						+ (Runtime.getRuntime().totalMemory() - baseMemory));
