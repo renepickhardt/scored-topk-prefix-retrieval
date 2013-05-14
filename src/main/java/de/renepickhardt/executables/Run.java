@@ -10,7 +10,7 @@ import de.renepickhardt.utils.IOHelper;
 import de.renepickhardt.utils.SuggestTree;
 import de.renepickhardt.utils.SuggestTree.Node;
 import de.unikoblenz.stpr.ScoredArrayTrie.ScoredArrayTrie;
-import de.unikoblenz.stpr.ScoredArrayTrie.SearchResult;
+import de.unikoblenz.stpr.ScoredArrayTrie.ScoredArrayTrieNode;
 import de.unikoblenz.stpr.interfaces.trie.TrieInterface;
 
 public class Run {
@@ -101,12 +101,12 @@ public class Run {
 				break;
 			}
 			long start = System.nanoTime();
-			List<SearchResult> res = T.getTopK(input, 5);
+			List<ScoredArrayTrieNode> res = T.getTopK(input, 5);
 			long end = System.nanoTime();
 			System.out.println("\n" + (end - start) / 1000
 					+ " micro seconds for suggestions with PREFIX TRIE");
-			for (SearchResult entry : res) {
-				IOHelper.log(entry.score + "\t" + entry.name);
+			for (ScoredArrayTrieNode entry : res) {
+				IOHelper.log(entry.score + "\t" + entry.word);
 			}
 
 			System.out.println("suggestions with suggest tree:\n");

@@ -31,6 +31,9 @@ public class ScoredArrayTrie {
 		ScoredArrayTrieNode last = this.root;
 		for (int i = 0; i < s.length(); i++) {
 			last = last.addGetChild(s.charAt(i));
+			if (last.word == null) {
+				last.setWord(s.substring(0, i + 1));
+			}
 		}
 		last.setScore(score);
 		// last.updateMaxScore();
@@ -80,7 +83,7 @@ public class ScoredArrayTrie {
 	 * @param k
 	 * @return resultList
 	 */
-	public List<SearchResult> getTopK(String prefix, final int k) {
+	public List<ScoredArrayTrieNode> getTopK(String prefix, final int k) {
 
 		if (prefix == null) {
 			return null;
@@ -98,36 +101,32 @@ public class ScoredArrayTrie {
 		while (this.candidateSet.size() > 0) {
 			this.candidateSet.dequeueMax();
 		}
-		ArrayList<SearchResult> resultSet = new ArrayList<SearchResult>();
+		ArrayList<ScoredArrayTrieNode> resultSet = new ArrayList<ScoredArrayTrieNode>();
 
-		// add first candidate to candidate set
-		// InternalSearchResult tmp = new InternalSearchResult();
-		// tmp.name = new StringBuilder(prefix);
-		// tmp.node = startNode;
-		// tmp.score = startNode.maxScore;
-		// tmp.index = prefix.length();
-		// this.candidateSet.add(tmp);
 		this.candidateSet.add(startNode);
-		// TODO: enable debugging message
 
 		// start the main algorithm loop.
 		int maxQueueLength = k;
 		while (this.candidateSet.size() > 0 && resultSet.size() < k) {
-			// OLD RET InternalSearchResult curCandidate =
-			// this.candidateSet.dequeueMax();
-			// IOHelper.log("removing and processing : " + curCandidate.name
-			// + " as a potential candidate \t score: "
-			// + curCandidate.score);
+			ScoredArrayTrieNode curNode = this.candidateSet.dequeueMin();// this.candidateSet.dequeueMax();
 
-			// OLD RET ScoredArrayTrieNode curNode = curCandidate.node;
-			ScoredArrayTrieNode curNode = this.candidateSet.dequeueMax();
+			if (curNode.topChilds == null) {
+				// is leaf found a result
 
-			// Check if the current node should be added to the result set
-			if (curNode.maxScore <= curNode.score && curNode.score > 0) {
+				if (curNode.word != null) {
+					maxQueueLength--;
+					resultSet.add(curNode);
+					if (maxQueueLength == 0) {
+						return resultSet;
+					}
+				}
+				continue;
+			}
+
+			if (curNode.topChilds.get(0).maxScore <= curNode.score
+					&& curNode.score > 0) {
 				maxQueueLength--;
-				resultSet.add(new SearchResult(curNode.word, curNode.score));
-				// IOHelper.log("found result:\t" + curCandidate.name + "\t"
-				// + curCandidate.score);
+				resultSet.add(curNode);
 				if (maxQueueLength == 0) {
 					return resultSet;
 				}
@@ -142,26 +141,13 @@ public class ScoredArrayTrie {
 			for (ScoredArrayTrieNode potentialCandidate : curNode.topChilds) {
 				// System.out.println("!!!");
 				if (this.candidateSet.size() < maxQueueLength) {
-					// OLD RT InternalSearchResult nextCandidate = new
-					// InternalSearchResult(
-					// potentialCandidate, curCandidate);
 					// add to queue
 					this.candidateSet.add(potentialCandidate);
-					// IOHelper.log("potential candidate added: "
-					// + nextCandidate.name + "\t score: "
-					// + nextCandidate.score);
-				} else if (this.candidateSet.min().score < potentialCandidate.maxScore) {
-					// InternalSearchResult nextCandidate = new
-					// InternalSearchResult(
-					// potentialCandidate, curCandidate);
-					// IOHelper.log("potential candidate added: "
-					// + nextCandidate.name + "\t score: "
-					// + nextCandidate.score);
+				} else if (this.candidateSet.max().score < potentialCandidate.maxScore) {
+					// add to queue
 					this.candidateSet.add(potentialCandidate);
 
-					ScoredArrayTrieNode min = this.candidateSet.dequeueMin();
-					// IOHelper.log("potential candidate removed: " + min.name
-					// + "\t score: " + min.score);
+					ScoredArrayTrieNode min = this.candidateSet.dequeueMax();
 					// TODO: could also here compare to candidateSet.min() and
 					// change usedCompleteIndex Flag. If candidateSet.min() ==
 					// potentialCandidate then usedCompleteIndex can be equals
