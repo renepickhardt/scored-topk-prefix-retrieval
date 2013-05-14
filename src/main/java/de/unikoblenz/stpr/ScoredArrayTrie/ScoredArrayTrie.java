@@ -111,14 +111,14 @@ public class ScoredArrayTrie {
 		int maxQueueLength = k;
 		while (candidateSet.size() > 0 && resultSet.size() < k) {
 			InternalSearchResult curCandidate = candidateSet.dequeueMax();
-			// System.out.println("removing and processing : " + curEntry.myName
-			// + " as a potential candidate \t score: "
-			// + curEntry.topScore);
+			IOHelper.log("removing and processing : " + curCandidate.name
+					+ " as a potential candidate \t score: "
+					+ curCandidate.score);
 
 			ScoredArrayTrieNode curNode = curCandidate.node;
 
 			// Check if the current node should be added to the result set
-			if (curCandidate.score >= curNode.score) {
+			if (curCandidate.score >= curNode.score && curCandidate.score > 0) {
 				maxQueueLength--;
 				resultSet.add(new SearchResult(curCandidate));
 				IOHelper.log("found result:\t" + curCandidate.name + "\t"
@@ -135,14 +135,21 @@ public class ScoredArrayTrie {
 
 			boolean usedCompleteIndex = true;
 			for (ScoredArrayTrieNode potentialCandidate : curNode.topChilds) {
+				// System.out.println("!!!");
 				if (candidateSet.size() < maxQueueLength) {
 					InternalSearchResult nextCandidate = new InternalSearchResult(
 							potentialCandidate, curCandidate);
-					candidateSet.add(nextCandidate);
 					// add to queue
+					candidateSet.add(nextCandidate);
+					IOHelper.log("potential candidate added: "
+							+ nextCandidate.name + "\t score: "
+							+ nextCandidate.score);
 				} else if (candidateSet.min().score < potentialCandidate.maxScore) {
 					InternalSearchResult nextCandidate = new InternalSearchResult(
 							potentialCandidate, curCandidate);
+					IOHelper.log("potential candidate added: "
+							+ nextCandidate.name + "\t score: "
+							+ nextCandidate.score);
 					candidateSet.add(nextCandidate);
 
 					InternalSearchResult min = candidateSet.dequeueMin();
