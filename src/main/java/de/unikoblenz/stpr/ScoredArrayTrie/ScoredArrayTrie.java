@@ -110,7 +110,7 @@ public class ScoredArrayTrie {
 		while (this.candidateSet.size() > 0 && resultSet.size() < k) {
 			ScoredArrayTrieNode curNode = this.candidateSet.dequeueMin();// this.candidateSet.dequeueMax();
 
-			if (curNode.topChilds == null) {
+			if (curNode.topChilds.size() == 0) {
 				// is leaf found a result
 
 				if (curNode.word != null) {

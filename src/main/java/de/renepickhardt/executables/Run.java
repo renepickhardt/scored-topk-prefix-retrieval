@@ -92,7 +92,7 @@ public class Run {
 				IOHelper.log("Items: " + i + "\t Memory:"
 						+ (Runtime.getRuntime().totalMemory() - baseMemory));
 			}
-			if (i > 1500000) {
+			if (i > 2500000) {
 				break;
 			}
 		}
@@ -114,6 +114,10 @@ public class Run {
 			long end = System.nanoTime();
 			System.out.println("\n" + (end - start) / 1000
 					+ " micro seconds for suggestions with PREFIX TRIE");
+			if (res == null) {
+				IOHelper.log("prefix not in trie");
+				continue;
+			}
 			for (ScoredArrayTrieNode entry : res) {
 				IOHelper.log(entry.score + "\t" + entry.word);
 			}
