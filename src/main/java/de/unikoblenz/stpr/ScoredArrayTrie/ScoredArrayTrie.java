@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import de.renepickhardt.utils.IOHelper;
 import de.renepickhardt.utils.IntervalHeap;
 
 public class ScoredArrayTrie {
@@ -111,9 +110,9 @@ public class ScoredArrayTrie {
 		int maxQueueLength = k;
 		while (candidateSet.size() > 0 && resultSet.size() < k) {
 			InternalSearchResult curCandidate = candidateSet.dequeueMax();
-			IOHelper.log("removing and processing : " + curCandidate.name
-					+ " as a potential candidate \t score: "
-					+ curCandidate.score);
+			// IOHelper.log("removing and processing : " + curCandidate.name
+			// + " as a potential candidate \t score: "
+			// + curCandidate.score);
 
 			ScoredArrayTrieNode curNode = curCandidate.node;
 
@@ -121,8 +120,8 @@ public class ScoredArrayTrie {
 			if (curCandidate.score <= curNode.score && curCandidate.score > 0) {
 				maxQueueLength--;
 				resultSet.add(new SearchResult(curCandidate));
-				IOHelper.log("found result:\t" + curCandidate.name + "\t"
-						+ curCandidate.score);
+				// IOHelper.log("found result:\t" + curCandidate.name + "\t"
+				// + curCandidate.score);
 				if (maxQueueLength == 0) {
 					return resultSet;
 				}
@@ -141,20 +140,20 @@ public class ScoredArrayTrie {
 							potentialCandidate, curCandidate);
 					// add to queue
 					candidateSet.add(nextCandidate);
-					IOHelper.log("potential candidate added: "
-							+ nextCandidate.name + "\t score: "
-							+ nextCandidate.score);
+					// IOHelper.log("potential candidate added: "
+					// + nextCandidate.name + "\t score: "
+					// + nextCandidate.score);
 				} else if (candidateSet.min().score < potentialCandidate.maxScore) {
 					InternalSearchResult nextCandidate = new InternalSearchResult(
 							potentialCandidate, curCandidate);
-					IOHelper.log("potential candidate added: "
-							+ nextCandidate.name + "\t score: "
-							+ nextCandidate.score);
+					// IOHelper.log("potential candidate added: "
+					// + nextCandidate.name + "\t score: "
+					// + nextCandidate.score);
 					candidateSet.add(nextCandidate);
 
 					InternalSearchResult min = candidateSet.dequeueMin();
-					IOHelper.log("potential candidate removed: " + min.name
-							+ "\t score: " + min.score);
+					// IOHelper.log("potential candidate removed: " + min.name
+					// + "\t score: " + min.score);
 					// TODO: could also here compare to candidateSet.min() and
 					// change usedCompleteIndex Flag. If candidateSet.min() ==
 					// potentialCandidate then usedCompleteIndex can be equals
