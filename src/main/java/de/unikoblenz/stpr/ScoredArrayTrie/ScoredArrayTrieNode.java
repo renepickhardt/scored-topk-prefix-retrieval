@@ -350,4 +350,9 @@ public class ScoredArrayTrieNode implements TrieNodeInterface, Comparable<Scored
         }
         return lines;
     }
+    
+    public void setWord(String word){
+        this.word = word;
+    }
+    
 }

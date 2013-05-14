@@ -182,4 +182,23 @@ public class ScoredArrayTrie {
 		}
 		return resultSet;
 	}
+
+	/**
+	 * Returns node representing the String s in the trie. Returns null if s is
+	 * not found.
+	 * 
+	 * @param String
+	 * @return
+	 */
+	public ScoredArrayTrieNode getNode(String s) {
+		ScoredArrayTrieNode last = this.root;
+		for (int i = 0; i < s.length(); i++) {
+			last = last.getChild(s.charAt(i));
+			if (last == null) {
+				return null;
+			}
+		}
+		return last;
+	}
+
 }
