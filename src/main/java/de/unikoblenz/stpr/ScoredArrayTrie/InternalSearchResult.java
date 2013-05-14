@@ -17,9 +17,9 @@ public class InternalSearchResult implements Comparable<InternalSearchResult> {
 
 	public InternalSearchResult(ScoredArrayTrieNode potentialCandidate,
 			InternalSearchResult curCandidate) {
-		this.name = curCandidate.name;
-		this.index = curCandidate.index;
-		this.addChar(potentialCandidate.getChar());
+		this.name = new StringBuilder(curCandidate.name.toString()
+				+ potentialCandidate.getChar());
+		this.index = curCandidate.index + 1;
 		this.score = potentialCandidate.maxScore;
 		this.node = potentialCandidate;
 	}

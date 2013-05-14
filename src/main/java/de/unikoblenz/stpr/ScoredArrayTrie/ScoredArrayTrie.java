@@ -118,7 +118,7 @@ public class ScoredArrayTrie {
 			ScoredArrayTrieNode curNode = curCandidate.node;
 
 			// Check if the current node should be added to the result set
-			if (curCandidate.score >= curNode.score && curCandidate.score > 0) {
+			if (curCandidate.score <= curNode.score && curCandidate.score > 0) {
 				maxQueueLength--;
 				resultSet.add(new SearchResult(curCandidate));
 				IOHelper.log("found result:\t" + curCandidate.name + "\t"
