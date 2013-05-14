@@ -7,19 +7,25 @@ package de.unikoblenz.stpr.ScoredArrayTrie;
 import de.renepickhardt.utils.IOHelper;
 import de.renepickhardt.utils.SuggestTree;
 import de.unikoblenz.stpr.ScoredArrayTrie.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Queue;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import de.renepickhardt.utils.SuggestTree;
 
 /**
- *
+ * 
  * @author hartmann
  */
 public class ScoredArrayTrieTest {
