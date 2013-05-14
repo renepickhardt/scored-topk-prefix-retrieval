@@ -11,6 +11,8 @@ public class ScoredArrayTrie {
 
 	public ScoredArrayTrieNode root;
 
+	private IntervalHeap<InternalSearchResult> candidateSet = new IntervalHeap<InternalSearchResult>();
+
 	// Constructor
 	public ScoredArrayTrie() {
 		this.root = new ScoredArrayTrieNode('.', 0);
@@ -94,7 +96,10 @@ public class ScoredArrayTrie {
 			startNode = path.get(path.size() - 1);
 		}
 
-		IntervalHeap<InternalSearchResult> candidateSet = new IntervalHeap<InternalSearchResult>();
+		//
+		while (this.candidateSet.size() > 0) {
+			this.candidateSet.dequeueMax();
+		}
 		ArrayList<SearchResult> resultSet = new ArrayList<SearchResult>();
 
 		// add first candidate to candidate set
@@ -103,13 +108,13 @@ public class ScoredArrayTrie {
 		tmp.node = startNode;
 		tmp.score = startNode.maxScore;
 		tmp.index = prefix.length();
-		candidateSet.add(tmp);
+		this.candidateSet.add(tmp);
 		// TODO: enable debugging message
 
 		// start the main algorithm loop.
 		int maxQueueLength = k;
-		while (candidateSet.size() > 0 && resultSet.size() < k) {
-			InternalSearchResult curCandidate = candidateSet.dequeueMax();
+		while (this.candidateSet.size() > 0 && resultSet.size() < k) {
+			InternalSearchResult curCandidate = this.candidateSet.dequeueMax();
 			// IOHelper.log("removing and processing : " + curCandidate.name
 			// + " as a potential candidate \t score: "
 			// + curCandidate.score);
@@ -135,23 +140,23 @@ public class ScoredArrayTrie {
 			boolean usedCompleteIndex = true;
 			for (ScoredArrayTrieNode potentialCandidate : curNode.topChilds) {
 				// System.out.println("!!!");
-				if (candidateSet.size() < maxQueueLength) {
+				if (this.candidateSet.size() < maxQueueLength) {
 					InternalSearchResult nextCandidate = new InternalSearchResult(
 							potentialCandidate, curCandidate);
 					// add to queue
-					candidateSet.add(nextCandidate);
+					this.candidateSet.add(nextCandidate);
 					// IOHelper.log("potential candidate added: "
 					// + nextCandidate.name + "\t score: "
 					// + nextCandidate.score);
-				} else if (candidateSet.min().score < potentialCandidate.maxScore) {
+				} else if (this.candidateSet.min().score < potentialCandidate.maxScore) {
 					InternalSearchResult nextCandidate = new InternalSearchResult(
 							potentialCandidate, curCandidate);
 					// IOHelper.log("potential candidate added: "
 					// + nextCandidate.name + "\t score: "
 					// + nextCandidate.score);
-					candidateSet.add(nextCandidate);
+					this.candidateSet.add(nextCandidate);
 
-					InternalSearchResult min = candidateSet.dequeueMin();
+					InternalSearchResult min = this.candidateSet.dequeueMin();
 					// IOHelper.log("potential candidate removed: " + min.name
 					// + "\t score: " + min.score);
 					// TODO: could also here compare to candidateSet.min() and
