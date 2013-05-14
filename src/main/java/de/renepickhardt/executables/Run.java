@@ -73,10 +73,12 @@ public class Run {
 		int i = 0;
 		long baseMemory = Runtime.getRuntime().totalMemory();
 		SuggestTree tree = new SuggestTree(3);
-		T.add("wissenIstMacht", 1000000);
 		while ((line = br.readLine()) != null) {
 			String key = line.split("\t")[0];
 			int value = Integer.parseInt(line.split("\t")[1]);
+			if (key.length() > 15 && value < 5) {
+				continue;
+			}
 			try {
 				T.add(key, value);
 			} catch (Exception e) {
@@ -92,7 +94,8 @@ public class Run {
 				IOHelper.log("Items: " + i + "\t Memory:"
 						+ (Runtime.getRuntime().totalMemory() - baseMemory));
 			}
-			if (i > 2500000) {
+			if (i > 1000000) {
+				System.out.println("last entered key: " + key);
 				break;
 			}
 		}
