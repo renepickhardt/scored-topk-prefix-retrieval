@@ -11,7 +11,7 @@ public class ScoredArrayTrie {
 
 	public ScoredArrayTrieNode root;
 
-	private IntervalHeap<InternalSearchResult> candidateSet = new IntervalHeap<InternalSearchResult>();
+	private IntervalHeap<ScoredArrayTrieNode> candidateSet = new IntervalHeap<ScoredArrayTrieNode>();
 
 	// Constructor
 	public ScoredArrayTrie() {
@@ -89,13 +89,11 @@ public class ScoredArrayTrie {
 		if (prefix == "") {
 			startNode = this.root;
 		} else {
-			List<ScoredArrayTrieNode> path = this.find(prefix);
-			if (path == null) {
-				return null;
-			}
-			startNode = path.get(path.size() - 1);
+			startNode = this.getNode(prefix);
 		}
-
+		if (startNode == null) {
+			return null;
+		}
 		//
 		while (this.candidateSet.size() > 0) {
 			this.candidateSet.dequeueMax();
@@ -103,28 +101,31 @@ public class ScoredArrayTrie {
 		ArrayList<SearchResult> resultSet = new ArrayList<SearchResult>();
 
 		// add first candidate to candidate set
-		InternalSearchResult tmp = new InternalSearchResult();
-		tmp.name = new StringBuilder(prefix);
-		tmp.node = startNode;
-		tmp.score = startNode.maxScore;
-		tmp.index = prefix.length();
-		this.candidateSet.add(tmp);
+		// InternalSearchResult tmp = new InternalSearchResult();
+		// tmp.name = new StringBuilder(prefix);
+		// tmp.node = startNode;
+		// tmp.score = startNode.maxScore;
+		// tmp.index = prefix.length();
+		// this.candidateSet.add(tmp);
+		this.candidateSet.add(startNode);
 		// TODO: enable debugging message
 
 		// start the main algorithm loop.
 		int maxQueueLength = k;
 		while (this.candidateSet.size() > 0 && resultSet.size() < k) {
-			InternalSearchResult curCandidate = this.candidateSet.dequeueMax();
+			// OLD RET InternalSearchResult curCandidate =
+			// this.candidateSet.dequeueMax();
 			// IOHelper.log("removing and processing : " + curCandidate.name
 			// + " as a potential candidate \t score: "
 			// + curCandidate.score);
 
-			ScoredArrayTrieNode curNode = curCandidate.node;
+			// OLD RET ScoredArrayTrieNode curNode = curCandidate.node;
+			ScoredArrayTrieNode curNode = this.candidateSet.dequeueMax();
 
 			// Check if the current node should be added to the result set
-			if (curCandidate.score <= curNode.score && curCandidate.score > 0) {
+			if (curNode.maxScore <= curNode.score && curNode.score > 0) {
 				maxQueueLength--;
-				resultSet.add(new SearchResult(curCandidate));
+				resultSet.add(new SearchResult(curNode.word, curNode.score));
 				// IOHelper.log("found result:\t" + curCandidate.name + "\t"
 				// + curCandidate.score);
 				if (maxQueueLength == 0) {
@@ -141,22 +142,24 @@ public class ScoredArrayTrie {
 			for (ScoredArrayTrieNode potentialCandidate : curNode.topChilds) {
 				// System.out.println("!!!");
 				if (this.candidateSet.size() < maxQueueLength) {
-					InternalSearchResult nextCandidate = new InternalSearchResult(
-							potentialCandidate, curCandidate);
+					// OLD RT InternalSearchResult nextCandidate = new
+					// InternalSearchResult(
+					// potentialCandidate, curCandidate);
 					// add to queue
-					this.candidateSet.add(nextCandidate);
+					this.candidateSet.add(potentialCandidate);
 					// IOHelper.log("potential candidate added: "
 					// + nextCandidate.name + "\t score: "
 					// + nextCandidate.score);
 				} else if (this.candidateSet.min().score < potentialCandidate.maxScore) {
-					InternalSearchResult nextCandidate = new InternalSearchResult(
-							potentialCandidate, curCandidate);
+					// InternalSearchResult nextCandidate = new
+					// InternalSearchResult(
+					// potentialCandidate, curCandidate);
 					// IOHelper.log("potential candidate added: "
 					// + nextCandidate.name + "\t score: "
 					// + nextCandidate.score);
-					this.candidateSet.add(nextCandidate);
+					this.candidateSet.add(potentialCandidate);
 
-					InternalSearchResult min = this.candidateSet.dequeueMin();
+					ScoredArrayTrieNode min = this.candidateSet.dequeueMin();
 					// IOHelper.log("potential candidate removed: " + min.name
 					// + "\t score: " + min.score);
 					// TODO: could also here compare to candidateSet.min() and
