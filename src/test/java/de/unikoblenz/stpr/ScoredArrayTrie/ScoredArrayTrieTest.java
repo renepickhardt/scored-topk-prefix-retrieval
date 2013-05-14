@@ -4,6 +4,7 @@
  */
 package de.unikoblenz.stpr.ScoredArrayTrie;
 
+import de.renepickhardt.utils.IOHelper;
 import de.renepickhardt.utils.SuggestTree;
 import de.unikoblenz.stpr.ScoredArrayTrie.*;
 import java.util.ArrayList;
@@ -260,16 +261,20 @@ public class ScoredArrayTrieTest {
     }
 
     public void checkResults(String prefix) {
+        IOHelper.log("Check results for " + prefix);
         SuggestTree.Node resTree = sTree.getSuggestions(prefix);
         List<SearchResult> res = T.getTopK(prefix, maxResults);
 
         if (resTree == null) { // no prefix found
             assertNull(res);
+            return;
         }
 
+        IOHelper.log("* Found: " + resTree.size() + " results." );
         assertEquals(resTree.size(), res.size());
 
         for (int i = 0; i < res.size(); i++) {
+            IOHelper.log("* hit: " + resTree.getSuggestion(i)+ " - " + res.get(i) );
             assertEquals(resTree.getWeight(i), res.get(i).score);
             assertEquals(resTree.getSuggestion(i), res.get(i).name);
         }
