@@ -5,17 +5,26 @@
 package de.unikoblenz.stpr.ScoredArrayTrie;
 
 /**
- *
- * @author hartmann
+ * 
+ * @author hartmann, rpickhardt
  */
-public class SearchResult {
+public class SearchResult implements Comparable<SearchResult> {
 
-    public SearchResult(String name, int score) {
-        this.name = name;
-        this.score = score;
-    }
-    
-    public String name;
-    public int score;
+	public SearchResult(String name, int score) {
+		this.name = name;
+		this.score = score;
+	}
+
+	public SearchResult(InternalSearchResult curCandidate) {
+		this.name = curCandidate.getName();
+		this.score = curCandidate.score;
+	}
+
+	public String name;
+	public int score;
+
+	public int compareTo(SearchResult o) {
+		return this.score - o.score;
+	}
 
 }
