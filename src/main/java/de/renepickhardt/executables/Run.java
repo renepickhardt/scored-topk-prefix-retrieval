@@ -17,7 +17,6 @@ public class Run {
 	public static final String INPUT_FILE = Config.get().inputFile;
 
 	public static void main(String[] args) throws IOException, Exception {
-		ScoredLinkedTrie T = new ScoredLinkedTrie();
 
 		// T.insertScored("AB", 6);
 		// T.insertScored("AAA", 3);
@@ -73,7 +72,7 @@ public class Run {
 		String line = "";
 		int i = 0;
 		long baseMemory = Runtime.getRuntime().totalMemory();
-		SuggestTree tree = new SuggestTree(5);
+		SuggestTree tree = new SuggestTree(15);
 		T.insertScored("wissenIstMacht", 1000000);
 		while ((line = br.readLine()) != null) {
 			String key = line.split("\t")[0];
@@ -84,7 +83,7 @@ public class Run {
 				IOHelper.log("Items: " + i + "\t Memory:"
 						+ (Runtime.getRuntime().totalMemory() - baseMemory));
 			}
-			if (i > 100000) {
+			if (i > 1500000) {
 				break;
 			}
 		}
